@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Get Ready for the Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: 600px;
+      background: #111;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px red;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: red;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px red;
+    }
+
+    .rules {
+      text-align: left;
+      margin-bottom: 30px;
+    }
+
+    .rules li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      font-size: 1.1rem;
+    }
+
+    .emoji {
+      margin-right: 8px;
+    }
+
+    .start-btn {
+      padding: 15px 40px;
+      background-color: red;
+      color: black;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px red;
+      transition: 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .start-btn:hover {
+      background-color: white;
+      color: red;
+      box-shadow: 0 0 25px red;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🧠 Ready to Quiz?</h1>
+    <ul class="rules">
+      <li><span class="emoji">⏱️</span> You have limited time to answer each question.</li>
+      <li><span class="emoji">✅</span> Each correct answer gives you points.</li>
+      <li><span class="emoji">🚫</span> No going back once you select an answer.</li>
+      <li><span class="emoji">🎯</span> Try to get the highest score possible!</li>
+      <li><span class="emoji">📱</span> Works great on mobile & desktop.</li>
+      <li><span class="emoji">🍀</span> Good luck and have fun!.</li>
+      <li><span class="emoji">🎉</span> Let's get started!.</li>
+    </ul>
+    <form action="/ques/test" method="post">
+      <button type="submit" class="start-btn">🚀 Start Quiz</button>
+    </form>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java and Python Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #1b1b1b;
+            color: rgb(255, 255, 255);
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            background-color: #1b1b1b;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Java and Python Questions</h2>
+        <form id="questionForm" action="questionOne" method="post" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="questionType">Select Question Type:</label>
+                <select id="questionType" name="questionType" required>
+                    <option value="none" >-- Select --</option>
+                    <option value="java" >Java</option>
+                    <option value="python" >Python</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+
+
+    <script>
+        function validateForm() {
+          var x = document.forms["myForm"]["fname"].value;
+          if (x == "" || x == null) {
+            alert("Name must be filled out");
+            return false;
+          }
+        }
+        </script>
+</body>
+</html>

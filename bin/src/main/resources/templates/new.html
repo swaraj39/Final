@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizz Forge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .hover-transition {
+      transition: all 0.3s ease;
+    }
+
+    .hover-transition:hover {
+      transform: scale(1.05);
+      border: 2px solid transparent;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .button {
+      background-color: #000000;
+      color: #ffffff;
+      padding: 10px 20px;
+      border: 2px solid #151515;
+      /* ✅ White border by default */
+      border-radius: px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 75ms ease-in-out, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .button:hover {
+      border-color: #000000;
+      /* 🔥 Red border on hover */
+      box-shadow: 9px 1px 50px 14px rgba(255, 0, 0, 0.5), 0px 0px 25px rgba(204, 0, 255, 0.5);
+      transform: scale(1.05);
+    }
+
+    .button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(157, 0, 255, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-black py-4">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <div class="text-2xl font-bold">
+        <i class="fas fa-rocket text-red-500"></i> <!-- Font Awesome icon -->
+        Quiz <span class="text-red-500">Forge</span>
+      </div>
+      <nav class="space-x-4">
+        <a href="#" class="text-white hover:text-red-500">Home</a>
+        <a href="#features" class="text-white hover:text-red-500">Features</a>
+        <a href="#contact" class="text-white hover:text-red-500">Contact</a>
+      </nav>
+      <div class="space-x-4">
+        <button
+          class="bg-black text-white px-4 py-2 rounded-full  button border-solid border-white-500 hover:border-red-500 hover:text-white">
+          <span th:text="'Welcome ' + ${name}">Welcome User</span>
+
+        </button>
+        <!-- for id .... use authe.pricipal.bla  act as object of user -->
+      </div>
+    </div>
+  </header>
+
+  <main class="bg-black text-white py-20">
+    <section class="bg-black text-center py-20 bg-gradient-to-b from-black to-gray-900">
+      <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-4">Let's Go For a <span class="text-red-500">Quiz</span></h1>
+        <p class="text-lg mb-8">Quiz is a fun and interactive way to test your knowledge and learn new things.</p>
+        <form action="/ques/before" method="POST" class="mb-8">
+          <button
+            class="bg-black text-white px-6 py-3 rounded-full mb-8 button border-solid hover:border-red-500 hover:text-white">Go</button>
+        </form>
+        <!-- Daily Question Section -->
+        <div class="mt-12 bg-black p-6 rounded-lg shadow-lg gap-4">
+          <i class="fas fa-question-circle text-3xl text-red-500 mb-4"></i>
+          <h2 class="text-2xl font-bold text-red-500 mb-4">Daily Question</h2>
+          <p class="mb-4">Sharpen your skills with today's question!</p>
+          <form action="/ques/dailyQuestion" method="POST">
+            <button type="submit"
+              class="bg-black text-white px-6 py-3 rounded-full button border-solid hover:border-red-500 hover:text-white">View
+              Daily Question</button>
+          </form>
+        </div><br>
+
+        <div class="flex justify-center space-x-9" id="features">
+          <div class="bg-black p-6 rounded-lg hover-transition">
+            <i class="fas fa-cogs text-3xl text-red-500 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2">Practice Questions</h3>
+            <p>Practice makes man perfect. We provide a wide range of practice questions to help you prepare.</p>
+            <a href="/ques/getall">
+              <button
+                class="bg-black text-white px-2 py-2 rounded-full mt-9 button border-solid hover:border-red-500 hover:text-white">Do
+                it Now</button>
+            </a>
+          </div>
+          <div class="bg-black p-6 rounded-lg hover-transition">
+            <i class="fas fa-chart-line text-3xl text-red-500 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2">Add own Questions</h3>
+            <p>Helping you to create your own questions and share them with others.</p>
+            <a href="/ques/add">
+              <button
+                class="bg-black text-white px-4 py-2 rounded-full mt-4 button border-solid hover:border-red-500 hover:text-white">Add</button>
+            </a>
+          </div>
+          <div class="bg-black p-6 rounded-lg hover-transition">
+            <i class="fas fa-users text-3xl text-red-500 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2">Share Experience</h3>
+            <p>Share your experience with others and learn from their experiences.</p>
+            <button
+              class="bg-black text-white px-4 py-2 rounded-full mt-4 button border-solid hover:border-red-500 hover:text-white">Learn
+              More</button>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <img src="https://storage.googleapis.com/a1aa/image/Gjlp0V2BPYiD_-hsM9DB5t9uZkm5zPIi0IHMf6xjjNY.jpg"
+            width="400" height="300" alt="Rocket launching illustration" class="mx-auto" />
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-gray-900 py-20" id="contact">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-4">Feel free to Ask </h2>
+        <p class="text-lg mb-8">Have questions🤔? Get in touch with us.</p>
+        <form action="/contact" method="POST" class="mb-8">
+          <input type="text" name="name" placeholder="Your Name"
+            class="bg-gray-800 text-white px-4 py-2 rounded mb-4 w-full" />
+          <input type="email" name="email" placeholder="Your Email"
+            class="bg-gray-800 text-white px-4 py-2 rounded mb-4 w-full" />
+          <textarea name="message" placeholder="Your Message"
+            class="bg-gray-800 text-white px-4 py-2 rounded mb-4 w-full"></textarea>
+          <button type="submit"
+            class="bg-black text-white px-4 py-2 rounded mt-4 button border-solid hover:border-red-500 hover:text-white">Send
+            Message</button>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

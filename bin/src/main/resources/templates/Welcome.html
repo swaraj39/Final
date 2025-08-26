@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Quizzz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(0, 0, 0);
+            height: 100vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.1);
+            background-color: rgb(0, 0, 0);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            margin-left: px;
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+
+        .description {
+            flex: 1;
+            max-width: 50%;
+            margin-right: 30px;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: left;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            font-family: "Lucida Handwriting", cursive;
+            font-style: italic;
+            text-shadow: 0 2px 1px #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            font-size: 1.5rem;
+            padding: 15px 40px;
+            color: rgb(255, 255, 255);
+            background-color: rgb(255, 0, 0);
+            text-decoration: none;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, #ffffff, #ffffff);
+            transform: translateY(-5px);
+            color: red;
+            box-shadow: 0 12px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        #dynamicText {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid rgb(255, 255, 255);
+            animation: blink-caret 0.6s step-end infinite;
+            text-shadow: 0 2px 10px #fe0000;
+            /* Added red shadow */
+        }
+
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: rgb(0, 0, 0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="dynamicText"></h1>
+        <p>Challenge yourself and explore endless learning opportunities!</p>
+
+        <a href="/signup" class="btn">Let's Go</a>
+    </div>
+    <div class="description">
+        <h2>About Quizzz</h2>
+        <p>
+            Quizzz is your ultimate platform for exciting quizzes that enhance your learning experience. Whether
+            you're a student, professional, or just someone who loves to learn, Quizzz offers a variety of quizzes
+            to challenge your knowledge and expand your horizons. With a fun and interactive interface,
+            Quizzz makes learning a joyful journey.
+        </p>
+        <p>
+            Explore categories, compete with friends, and track your progress as you embark on this exciting
+            learning adventure. Start today and discover the joy of quizzing!
+        </p>
+    </div>
+    <h4 style="position: absolute; bottom: 10px; text-align: center; width: 100%;">2024 website <br><br>
+        Verified Website
+    </h4>
+    <script>
+        const dynamicText = document.getElementById('dynamicText');
+        const messages = [
+            'Welcome Quizzers!',
+            'Your Gateway to Knowledge ',
+            'Start Your Journey Now ',
+            'Challenge Yourself!',
+            'Ready to Login?'
+        ];
+
+        let index = 0;
+
+        function typeAndEraseText() {
+            let currentMessage = messages[index];
+            let charIndex = 0;
+
+            function typeChar() {
+                if (charIndex < currentMessage.length) {
+                    dynamicText.textContent += currentMessage[charIndex];
+                    charIndex++;
+                    setTimeout(typeChar, 100); // Typing speed
+                } else {
+                    setTimeout(eraseChar, 1000); // Wait 1 second before erasing
+                }
+            }
+
+            function eraseChar() {
+                if (charIndex > 0) {
+                    dynamicText.textContent = currentMessage.slice(0, --charIndex);
+                    setTimeout(eraseChar, 100); // Erasing speed
+                } else {
+                    index = (index + 1) % messages.length; // Move to the next message
+                    setTimeout(typeAndEraseText, 500); // Wait 0.5 seconds before starting next
+                }
+            }
+
+            typeChar();
+        }
+
+        typeAndEraseText();
+    </script>
+</body>
+
+</html>

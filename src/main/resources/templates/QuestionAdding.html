@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Question - QuizForge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-red: #e11d48;
+      --dark-red: #be123c;
+      --light-red: #fda4af;
+      --dark-bg: #0a0a0a;
+      --darker-bg: #000000;
+      --card-bg: #171717;
+      --text-light: #fafafa;
+      --text-gray: #a3a3a3;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
+      color: var(--text-light);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .red-card {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.15) 0%, rgba(190, 18, 60, 0.1) 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(225, 29, 72, 0.2);
+      border-radius: 16px;
+    }
+    
+    .red-gradient-text {
+      background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .red-hero-gradient {
+      background: linear-gradient(135deg, var(--dark-red) 0%, var(--primary-red) 100%);
+    }
+    
+    .button-red {
+      background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .button-red:hover {
+      background: linear-gradient(135deg, var(--light-red) 0%, var(--primary-red) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+    }
+    
+    .button-outline-red {
+      background: transparent;
+      border: 2px solid var(--primary-red);
+      transition: all 0.3s ease;
+    }
+    
+    .button-outline-red:hover {
+      background: var(--primary-red);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+    }
+    
+    .red-glow {
+      box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+    }
+    
+    .red-glow:hover {
+      box-shadow: 0 0 25px rgba(225, 29, 72, 0.7);
+    }
+    
+    .form-input {
+      background: rgba(15, 15, 15, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-red);
+      box-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
+    }
+    
+    .success-message {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #bbf7d0;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen py-8">
+  <!-- Navigation -->
+  <header class="fixed top-0 w-full z-50 py-4 px-6 md:px-12 bg-black bg-opacity-90 backdrop-blur-md border-b border-red-900">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full red-hero-gradient flex items-center justify-center text-white font-bold text-xl mr-3">
+          <i class="fas fa-fire"></i>
+        </div>
+        <span class="text-2xl font-bold text-white">Quiz<span class="red-gradient-text">Forge</span></span>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <a href="/dashboard" class="button-outline-red text-white px-4 py-2 rounded-full text-sm font-medium">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="max-w-4xl w-full red-card p-8 md:p-10 mx-4 animate-fadeIn mt-16">
+    <div class="text-center mb-8">
+      <div class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
+        <i class="fas fa-plus"></i>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold mb-2 red-gradient-text">Add New Question</h1>
+      <p class="text-gray-300">Create a new quiz question to expand the QuizForge database</p>
+    </div>
+    
+    <form action="/ques/save" method="get" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+    <label class="block text-gray-300 mb-2 font-medium">
+        <i class="fas fa-tag mr-2 text-red-400"></i>Category
+    </label>
+    <select name="cateogry" class="w-full form-input px-4 py-3 rounded-lg" required>
+        <option value="" disabled selected>Select a category</option>
+        <option th:each="cat : ${categories}"
+                th:value="${cat.name}"
+                th:text="${cat.name}">
+        </option>
+    </select>
+</div>
+
+        
+        <div>
+          <label class="block text-gray-300 mb-2 font-medium">
+            <i class="fas fa-signal mr-2 text-red-400"></i>Difficulty Level
+          </label>
+          <select name="level" class="w-full form-input px-4 py-3 rounded-lg" required>
+            <option value="" disabled selected>Select difficulty</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-gray-300 mb-2 font-medium">
+          <i class="fas fa-question-circle mr-2 text-red-400"></i>Question
+        </label>
+        <textarea name="question" placeholder="Enter your question here..." rows="3" class="w-full form-input px-4 py-3 rounded-lg" required autocomplete="off"></textarea>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-gray-300 mb-2 font-medium">
+            <i class="fas fa-dot-circle mr-2 text-red-400"></i>Option 1
+          </label>
+          <input type="text" name="option1" placeholder="Enter option 1" class="w-full form-input px-4 py-3 rounded-lg" required autocomplete="off">
+        </div>
+        
+        <div>
+          <label class="block text-gray-300 mb-2 font-medium">
+            <i class="fas fa-dot-circle mr-2 text-red-400"></i>Option 2
+          </label>
+          <input type="text" name="option2" placeholder="Enter option 2" class="w-full form-input px-4 py-3 rounded-lg" required autocomplete="off">
+        </div>
+        
+        <div>
+          <label class="block text-gray-300 mb-2 font-medium">
+            <i class="fas fa-dot-circle mr-2 text-red-400"></i>Option 3
+          </label>
+          <input type="text" name="option3" placeholder="Enter option 3" class="w-full form-input px-4 py-3 rounded-lg" required autocomplete="off">
+        </div>
+        
+        <div>
+          <label class="block text-gray-300 mb-2 font-medium">
+            <i class="fas fa-dot-circle mr-2 text-red-400"></i>Option 4
+          </label>
+          <input type="text" name="option4" placeholder="Enter option 4" class="w-full form-input px-4 py-3 rounded-lg" required autocomplete="off">
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-gray-300 mb-2 font-medium">
+          <i class="fas fa-check-circle mr-2 text-red-400"></i>Correct Answer
+        </label>
+        <select name="correctans" class="w-full form-input px-4 py-3 rounded-lg" required>
+          <option value="" disabled selected>Select the correct option</option>
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+          <option value="4">Option 4</option>
+        </select>
+        <p class="text-gray-400 text-sm mt-2">Select which option is the correct answer</p>
+      </div>
+      
+      <div class="pt-4 flex flex-col sm:flex-row gap-4">
+        <button type="reset" class="button-outline-red text-white font-semibold px-8 py-3 rounded-full flex items-center justify-center">
+          <i class="fas fa-redo mr-2"></i> Reset Form
+        </button>
+        
+        <button type="submit" class="button-red text-white font-semibold px-8 py-3 rounded-full red-glow flex items-center justify-center">
+          <i class="fas fa-save mr-2"></i> Save Question
+        </button>
+      </div>
+    </form>
+
+    <!-- Success Message -->
+    <div th:if="${message}" class="success-message p-4 rounded-lg mt-6 flex items-center" th:text="${message}">
+      <i class="fas fa-check-circle mr-2 text-green-400"></i>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="fixed bottom-0 w-full py-4 px-6 bg-black bg-opacity-70 border-t border-red-900 text-center text-sm text-gray-400">
+    <p>© 2024 QuizForge. All rights reserved. • Expand knowledge, one question at a time</p>
+  </footer>
+
+  <script>
+    // Form validation and enhancement
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      
+      // Add input validation
+      const inputs = form.querySelectorAll('input, textarea, select');
+      inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+          if (this.value.trim() !== '') {
+            this.classList.add('bg-opacity-100');
+          } else {
+            this.classList.remove('bg-opacity-100');
+          }
+        });
+      });
+      
+      // Confirm before reset
+      form.addEventListener('reset', function(e) {
+        if (!confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

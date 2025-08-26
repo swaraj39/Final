@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Question</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .glow-border {
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 15px #ff0000, 0 0 30px #cc00ff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 15px #ff0000, 0 0 30px #cc00ff;
+            }
+            50% {
+                box-shadow: 0 0 25px #cc00ff, 0 0 40px #ff0000;
+            }
+            100% {
+                box-shadow: 0 0 15px #ff0000, 0 0 30px #cc00ff;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen flex items-center justify-center p-8">
+
+<div class="max-w-2xl w-full bg-gray-900 rounded-xl p-8 glow-border text-white">
+    <h1 class="text-4xl font-bold text-center mb-6">
+        🚀 <span class="text-red-500">Daily Question</span>
+    </h1>
+
+    <div th:if="${question != null}">
+
+        <p class="text-xl font-semibold mb-6 text-center">Question: <span th:text="${question.question}"></span></p>
+        <div class="space-y-3">
+            <div class="bg-gray-800 hover:bg-gray-700 transition p-4 rounded-lg">Option 1:
+                <span th:text="${question.option1}"></span>
+            </div>
+            <div class="bg-gray-800 hover:bg-gray-700 transition p-4 rounded-lg">Option 2:
+                <span th:text="${question.option2}"></span>
+            </div>
+            <div class="bg-gray-800 hover:bg-gray-700 transition p-4 rounded-lg">Option 3:
+                <span th:text="${question.option3}"></span>
+            </div>
+            <div class="bg-gray-800 hover:bg-gray-700 transition p-4 rounded-lg">Option 4:
+                <span th:text="${question.option4}"></span>
+            </div>
+        </div>
+
+        <!-- Hidden Answer Section -->
+        <div id="answer-section" class="space-y-3 mt-6 hidden">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <strong>Answer:</strong> <span class="text-green-500 animate-pluse" th:text="${question.answer}"></span>
+            </div>
+        </div>
+
+        <!-- Show Answer Button -->
+        <div id="show-answer-btn-container" class="text-center mt-6 hidden">
+            <button onclick="showAnswer()"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-lg transition">
+                👀 Show Answer
+            </button>
+        </div>
+    </div>
+
+    <div th:if="${question == null}" class="text-center text-red-400 mt-8">
+        <p>No question available for today.</p>
+    </div>
+
+    <div class="text-center mt-10">
+        <a href="/ques/home" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-lg transition ">
+            ⬅️ Back to Home
+        </a>
+    </div>
+</div>
+
+<script>
+    // Wait 10 seconds before showing the "Show Answer" button
+    setTimeout(() => {
+        document.getElementById("show-answer-btn-container").classList.remove("hidden");
+    }, 10000);
+
+    // Function to show the answer section
+    function showAnswer() {
+        document.getElementById("answer-section").classList.remove("hidden");
+        document.getElementById("show-answer-btn-container").classList.add("hidden");
+    }
+</script>
+
+</body>
+</html>

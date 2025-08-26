@@ -1,0 +1,479 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Quiz Application Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.1);
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ef4444;
+            transition: width 0.3s ease;
+        }
+
+        .nav-item:hover::after {
+            width: 100%;
+        }
+
+        .table-row {
+            transition: background-color 0.2s ease;
+        }
+
+        .table-row:hover {
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        .glow {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Streak calendar styles */
+        .streak-day {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .streak-active {
+            background: linear-gradient(145deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        .streak-inactive {
+            background: rgba(55, 65, 81, 0.3);
+            color: rgba(156, 163, 175, 0.7);
+        }
+
+        .streak-current {
+            border: 2px solid #ef4444;
+            transform: scale(1.1);
+        }
+
+        /* Flame animation */
+        @keyframes flame {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .flame-animation {
+            animation: flame 2s infinite;
+            color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col text-gray-300">
+    <!-- Header -->
+    <header class="bg-[#0f0f0f] shadow-lg sticky top-0 z-30 border-b border-red-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            <div class="text-2xl font-bold flex items-center space-x-2">
+                <div class="bg-red-600 p-2 rounded-lg glow">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <span class="text-white">Quiz</span>
+                <span class="gradient-text font-extrabold">Forge</span>
+            </div>
+            <nav class="hidden md:flex space-x-8 font-medium">
+                <a class="nav-item text-red-400 hover:text-red-300 transition" href="#">
+                    Dashboard
+                </a>
+                <a class="nav-item text-gray-400 hover:text-red-300 transition" href="#">
+                    Quizzes
+                </a>
+                <a class="nav-item text-gray-400 hover:text-red-300 transition" href="#">
+                    Results
+                </a>
+                <a class="nav-item text-gray-400 hover:text-red-300 transition" href="#">
+                    Users
+                </a>
+                <a class="nav-item text-gray-400 hover:text-red-300 transition" href="#">
+                    Settings
+                </a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button aria-label="User menu"
+                    class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-lg hover:bg-gray-800 transition">
+                    <div class="relative">
+                        <img alt="User avatar" class="h-9 w-9 rounded-full glow"
+                            th:src="@{/images/{file}(file=${avatar})}" />
+                        <span
+                            class="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-gray-900"></span>
+                    </div>
+                    <div class="hidden sm:block text-left">
+                        <p class="text-sm font-semibold text-white" th:text="${name}">Admin</p>
+                        <p class="text-xs text-gray-400" th:text="${role}">Administrator</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                </button>
+            </div>
+            <!-- Mobile menu button -->
+            <button aria-label="Open menu"
+                class="md:hidden p-2 rounded-lg bg-gray-800 text-red-400 hover:text-red-300 focus:outline-none"
+                id="mobile-menu-button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile menu -->
+        <nav aria-label="Mobile menu" class="md:hidden bg-gray-900 border-t border-red-900/50 hidden" id="mobile-menu">
+            <a class="block px-4 py-3 text-red-400 hover:bg-gray-800 font-medium border-b border-gray-800" href="#">
+                <i class="fas fa-tachometer-alt w-5 mr-3"></i> Dashboard
+            </a>
+            <a class="block px-4 py-3 text-gray-400 hover:bg-gray-800 font-medium border-b border-gray-800" href="#">
+                <i class="fas fa-question-circle w-5 mr-3"></i> Quizzes
+            </a>
+            <a class="block px-4 py-3 text-gray-400 hover:bg-gray-800 font-medium border-b border-gray-800" href="#">
+                <i class="fas fa-chart-bar w-5 mr-3"></i> Results
+            </a>
+            <a class="block px-4 py-3 text-gray-400 hover:bg-gray-800 font-medium border-b border-gray-800" href="#">
+                <i class="fas fa-users w-5 mr-3"></i> Users
+            </a>
+            <a class="block px-4 py-3 text-gray-400 hover:bg-gray-800 font-medium" href="#">
+                <i class="fas fa-cog w-5 mr-3"></i> Settings
+            </a>
+        </nav>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto p-6 max-w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">
+                    Dashboard Overview
+                </h2>
+                <button
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center transition">
+                    <i class="fas fa-plus mr-2"></i> New Quiz
+                </button>
+            </div>
+
+            <!-- Stats cards -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="stat-card rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400 mb-1">
+                                Total Quizzes
+                            </p>
+                            <p class="text-2xl font-bold text-white" th:text="${number}">
+                                15
+                            </p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 text-red-400 rounded-lg">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400 mb-1">
+                                Active Users
+                            </p>
+                            <p class="text-2xl font-bold text-white" th:text="${lists}">
+                                1,234
+                            </p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 text-red-400 rounded-lg">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400 mb-1">
+                                Reviews
+                            </p>
+                            <p class="text-2xl font-bold text-white" th:text="${reviews}">
+                                8
+                            </p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 text-red-400 rounded-lg">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400 mb-1">
+                                Avg. Score
+                            </p>
+                            <p class="text-2xl font-bold text-white" th:text="${avg + '%'}">
+                                78%
+                            </p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 text-red-400 rounded-lg">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Streak Section -->
+            <section class="bg-[#0f0f0f] rounded-xl border border-gray-800 overflow-hidden mb-8">
+                <div class="px-5 py-4 border-b border-gray-800 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-white flex items-center">
+                        <i class="fas fa-fire text-red-400 mr-2 flame-animation"></i>
+                        Your Activity Streak
+                    </h3>
+                    <span class="text-sm text-red-400" th:text="${current} + ' days'">5 days</span>
+                </div>
+                <div class="p-5">
+                    <div class="flex justify-between items-center mb-5">
+                        <div>
+                            <p class="text-gray-400 mb-1">Current Streak</p>
+                            <p class="text-3xl font-bold text-white flex items-center" th:text="${current}">
+                                5 <i class="fas fa-fire text-red-500 ml-2 flame-animation"></i>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-gray-400 mb-1">Longest Streak</p>
+                            <p class="text-2xl font-bold text-white" th:text="${longest} + ' days'">12 days</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-info-circle text-red-400 mr-2"></i>
+                        <span>Complete a quiz each day to maintain your streak!</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Recent Quizzes Table -->
+                <section class="bg-[#0f0f0f] rounded-xl border border-gray-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-gray-800 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-white">
+                            Recent Quizzes
+                        </h3>
+                        <a href="#" class="text-sm text-red-400 hover:text-red-300">View All</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-900/50">
+                                <tr>
+                                    <th class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                                        scope="col">
+                                        Quiz Name
+                                    </th>
+                                    <th class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                                        scope="col">
+                                        Questions
+                                    </th>
+                                    <th class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                                        scope="col">
+                                        Status
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800">
+                                <tr th:each="show1, status: ${show}" class="table-row">
+                                    <td class="px-5 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="bg-red-900/20 p-2 rounded-lg mr-3">
+                                                <i class="fas fa-question-circle text-red-400"></i>
+                                            </div>
+                                            <span class="text-white font-medium" th:text="${show1.name}">General
+                                                Knowledge</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${show1.no}">
+                                        15
+                                    </td>
+                                    <td class="px-5 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 py-1 text-xs rounded-full bg-green-900/30 text-green-400">Active</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Recent Users -->
+                <section class="bg-[#0f0f0f] rounded-xl border border-gray-800 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-gray-800 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-white">
+                            Recent Users
+                        </h3>
+                        <a href="#" class="text-sm text-red-400 hover:text-red-300">View All</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-900/50">
+                                <tr>
+                                    <th
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        User</th>
+                                    <th
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Joined On</th>
+                                    <th
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Quizzes Taken</th>
+                                    <th
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800">
+                                <tr th:each="user : ${users}" class="table-row">
+                                    <td class="px-5 py-4 whitespace-nowrap">
+                                        <div class="flex items-center space-x-5">
+                                            <img alt="User avatar" class="h-9 w-9 rounded-full glow"
+                                                th:src="@{/images/{file}(file=${avatar})}" />
+
+                                            <div>
+                                                <p class="text-white font-medium" th:text="${user.id}">John Doe</p>
+                                                <p class="text-xs text-gray-400" th:text="${user.email}">
+                                                    user@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${user.joinDate}">
+                                        2024-01-01</td>
+                                    <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${user.noquiz}">5
+                                    </td>
+                                    <td class="px-5 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-900/30 text-green-400"
+                                            th:if="${user.isVerified == true}">Active</span>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-red-900/30 text-red-400"
+                                            th:if="${user.isVerified == false}">Inactive</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Quick Actions -->
+            <section class="mb-8">
+                <h3 class="text-lg font-semibold text-white mb-4">
+                    Quick Actions
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="#"
+                        class="bg-[#0f0f0f] border border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center transition hover:border-red-500/30 hover:glow">
+                        <div class="bg-red-900/20 p-3 rounded-full text-red-400 mb-2">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <span class="text-sm text-gray-300">Create Quiz</span>
+                    </a>
+                    <a href="#"
+                        class="bg-[#0f0f0f] border border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center transition hover:border-red-500/30 hover:glow">
+                        <div class="bg-red-900/20 p-3 rounded-full text-red-400 mb-2">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <span class="text-sm text-gray-300">Add User</span>
+                    </a>
+                    <a href="#"
+                        class="bg-[#0f0f0f] border border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center transition hover:border-red-500/30 hover:glow">
+                        <div class="bg-red-900/20 p-3 rounded-full text-red-400 mb-2">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <span class="text-sm text-gray-300">View Reports</span>
+                    </a>
+                    <a href="#"
+                        class="bg-[#0f0f0f] border border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center transition hover:border-red-500/30 hover:glow">
+                        <div class="bg-red-900/20 p-3 rounded-full text-red-400 mb-2">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <span class="text-sm text-gray-300">Settings</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Add active state to navigation
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPage = window.location.pathname;
+            const navLinks = document.querySelectorAll('nav a');
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('text-red-400');
+                    link.classList.remove('text-gray-400');
+                }
+            });
+
+            // Update streak calendar with actual data (this would come from your backend)
+            // This is just a demonstration
+            const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+            const days = document.querySelectorAll('.streak-day');
+
+            // Mark today as current
+            days[today].classList.add('streak-current');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login to QuizForge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary-red: #e11d48;
+            --dark-red: #be123c;
+            --light-red: #fda4af;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #000000;
+            --card-bg: #171717;
+            --text-light: #fafafa;
+            --text-gray: #a3a3a3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .red-card {
+            background: rgba(23, 23, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(225, 29, 72, 0.25);
+            border-radius: 16px;
+            max-width: 420px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .red-gradient-text {
+            background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .button-red {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .button-red:hover {
+            background: linear-gradient(135deg, var(--light-red) 0%, var(--primary-red) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -5px rgba(225, 29, 72, 0.4);
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(225, 29, 72, 0.25);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-gray);
+        }
+
+        @keyframes slideFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-fade {
+            animation: slideFadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes bouncePulse {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-8px) scale(1.05);
+            }
+        }
+
+        .emoji-loader {
+            font-size: 48px;
+            animation: bouncePulse 1s infinite;
+        }
+
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .social-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(225, 29, 72, 0.25);
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .social-btn:hover {
+            background: rgba(225, 29, 72, 0.1);
+            border-color: var(--primary-red);
+        }
+
+        .toggle-link {
+            color: var(--primary-red);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .toggle-link:hover {
+            color: var(--light-red);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(190, 18, 60, 0.2);
+            border: 1px solid var(--dark-red);
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+            padding: 0.75rem;
+        }
+
+        .logo-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .divider {
+            margin: 1.25rem 0;
+            height: 1px;
+            background: rgba(225, 29, 72, 0.2);
+        }
+    </style>
+    <script>
+        function toggleForm() {
+            const loginForm = document.getElementById('login-form');
+            const signUpForm = document.getElementById('sign-up-form');
+            loginForm.classList.toggle('hidden');
+            signUpForm.classList.toggle('hidden');
+
+            // Clear error message when switching forms
+            document.getElementById('error-message').classList.add('hidden');
+        }
+
+        function showLoaderAndSubmit(formSelector) {
+            const loader = document.getElementById('loader-container');
+            loader.classList.remove('hidden');
+
+            const form = document.querySelector(formSelector);
+            if (form) {
+                form.submit();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error === 'true') {
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+
+            const userExists = urlParams.get('userexists');
+            if (userExists === 'true') {
+                alert("User already exists with this ID");
+                toggleForm();
+            }
+
+            document.getElementById('sign-in-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                showLoaderAndSubmit('form[action="loginn"]');
+            });
+
+            document.getElementById('sign-up-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                const password = document.getElementById("pass").value;
+
+                if (password.length < 6) {
+                    alert("Password must be at least 6 characters.");
+                    return;
+                }
+
+                showLoaderAndSubmit('form[action="signups"]');
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="red-card p-6 shadow-xl">
+        <div id="loader-container" class="hidden loader-container">
+            <div class="emoji-loader text-white font-serif">⏳</div>
+        </div>
+
+        <div class="logo-container flex justify-center">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white text-lg mr-2">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Quiz<span class="red-gradient-text">Forge</span></h1>
+            </div>
+        </div>
+
+        <div id="login-form">
+            <div id="error-message" class="error-message text-red-200 rounded mb-4 hidden">
+                <strong class="font-bold">Oops!</strong>
+                <span> Invalid ID or password. Please try again.</span>
+            </div>
+
+            <h2 class="text-xl font-bold text-white mb-1 text-center">Welcome Back</h2>
+            <p class="text-gray-400 mb-5 text-center text-sm">Don't have an account?
+                <span class="toggle-link" onclick="toggleForm()">Sign Up</span>
+            </p>
+
+            <form action="loginn" method="POST">
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm">ID</label>
+                    <input class="w-full rounded-lg input-field" placeholder="Enter your ID" name="id" type="text"
+                        required />
+                </div>
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm">Password</label>
+                    <input class="w-full rounded-lg input-field" placeholder="Enter 6 characters or more"
+                        name="password" type="password" required />
+                    <a class="text-xs text-red-400 float-right mt-1 hover:text-red-300" href="/forgot">Forgot
+                        Password?</a>
+                </div>
+
+                <div class="form-section flex items-center">
+                    <input class="form-checkbox text-red-600 rounded" name="remember-me" type="checkbox" />
+                    <span class="ml-2 text-gray-300 text-sm">Remember me</span>
+                </div>
+
+                <button id="sign-in-btn"
+                    class="w-full button-red text-white py-2.5 rounded-lg font-semibold mb-4 text-sm">
+                    LOGIN
+                </button>
+
+                <div class="divider"></div>
+
+                <div class="text-center text-gray-500 text-xs mb-3">or login with</div>
+
+                <div class="flex justify-center space-x-3">
+                    <button class="social-btn flex items-center rounded-lg text-gray-300">
+                        <img alt="Google logo" class="w-4 h-4"
+                            src="https://storage.googleapis.com/a1aa/image/CA5CDjAwArdykw0ZiSpk4_as5TjSgOMRfsUpHQdiRB0.jpg" />
+                    </button>
+                    <button class="social-btn flex items-center rounded-lg text-gray-300">
+                        <img alt="Facebook logo" class="w-4 h-4"
+                            src="https://storage.googleapis.com/a1aa/image/oYD5Ce0WMLHcB_bDQ5V4KgUdDALsKqVNiAzNC0dNk4E.jpg" />
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="sign-up-form" class="hidden">
+            <h2 class="text-xl font-bold text-white mb-1 text-center">Create Account</h2>
+            <p class="text-gray-400 mb-5 text-center text-sm">Already have an account?
+                <span class="toggle-link" onclick="toggleForm()">Login</span>
+            </p>
+
+            <form action="signups" method="POST">
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm">Avatar</label>
+                    <div class="flex space-x-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="avatar" value="Avtar1.png" class="hidden peer" required>
+                            <img th:src="@{/images/Avtar1.png}" alt="Avatar 1"
+                                class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="avatar" value="Avtar2.png" class="hidden peer">
+                            <img th:src="@{/images/Avtar2.png}" alt="Avatar 2"
+                                class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="avatar" value="Avtar3.png" class="hidden peer">
+                            <img th:src="@{/images/Avtar3.png}" alt="Avatar 3"
+                                class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="avatar" value="Avtar4.png" class="hidden peer">
+                            <img th:src="@{/images/Avtar4.png}" alt="Avatar 4"
+                                class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm" for="name">Name</label>
+                    <input name="name" id="name" class="w-full rounded-lg input-field" placeholder="Your Name"
+                        type="text" required />
+                </div>
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm" for="id">ID</label>
+                    <input name="id" id="id" class="w-full rounded-lg input-field" placeholder="Your ID" type="text"
+                        required />
+                </div>
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm" for="email">Email Address</label>
+                    <input name="email" id="email" class="w-full rounded-lg input-field" placeholder="you@example.com"
+                        type="email" required />
+                </div>
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm" for="pass">Password</label>
+                    <input name="password" id="pass" class="w-full rounded-lg input-field"
+                        placeholder="Enter 6 characters or more" type="password" required />
+                </div>
+
+                <div class="form-section">
+                    <label class="block text-gray-300 mb-2 text-sm" for="phoneno">Phone</label>
+                    <input name="phoneno" id="phoneno" class="w-full rounded-lg input-field"
+                        placeholder="Your Phone Number" type="tel" />
+                </div>
+
+                <button id="sign-up-btn" class="w-full button-red text-white py-2.5 rounded-lg font-semibold text-sm">
+                    SIGN UP
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

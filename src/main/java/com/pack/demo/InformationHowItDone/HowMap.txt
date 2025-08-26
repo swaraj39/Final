@@ -1,0 +1,88 @@
+You're asking how the `Map<String, String> answers` parameter in the controller method:
+
+```java
+@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
+public String submitQuiz(@RequestParam Map<String, String> answers, ...)
+```
+
+actually **stores** the data submitted from the form.
+
+Let me explain in the context of your form.
+
+---
+
+## ✅ 1. **Form Input Names**
+
+From the HTML:
+
+```html
+<input type="radio" th:name="'q' + ${question.id}" th:value="${question.option1}">
+```
+
+This compiles into something like:
+
+```html
+<input type="radio" name="q3" value="Option A">
+<input type="radio" name="q3" value="Option B">
+...
+```
+
+So for each question, you end up with **radio buttons named uniquely** like `q3`, `q7`, etc.
+
+Only the **selected value** for each `name` is submitted to the backend.
+
+---
+
+## ✅ 2. **Form Submission → Map Structure**
+
+When the form is submitted, Spring populates the `Map<String, String> answers` with:
+
+* **Key**: the name of the input (e.g., `q3`, `q7`)
+* **Value**: the selected option for that input
+
+### ✅ Example Submission
+
+If the user selects:
+
+* For question ID `3`: "Option A"
+* For question ID `7`: "Option C"
+
+The `answers` map will look like this:
+
+```java
+{
+  "q3": "Option A",
+  "q7": "Option C"
+}
+```
+
+---
+
+## 🔍 Why Use a `Map`?
+
+Using a `Map<String, String>` allows you to:
+
+* Handle an **unknown number** of inputs (dynamically generated questions)
+* Match user answers by key (e.g., `q3`) back to the `QuestionModel` list held in the session
+* Evaluate the quiz by comparing `answers.get("q" + question.getId())` to the correct answer
+
+---
+
+## ✅ Example Use in Your `evaluateQuiz()` Method
+
+If you have:
+
+```java
+for (QuestionModel question : randomQuestions) {
+    String userAnswer = answers.get("q" + question.getId());
+    if (question.getAnswer().equalsIgnoreCase(userAnswer)) {
+        score++;
+    }
+}
+```
+
+This will correctly match the user answer submitted via the form with the correct answer stored in `question`.
+
+---
+
+Let me know if you'd like help printing the submitted map for debugging, or adjusting how the IDs or keys work.

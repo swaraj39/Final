@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Out</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1d1d1d;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      background-color: #353535;
+      padding: 20px;
+      border-radius: 8px;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgb(0, 0, 0);
+      width: 100%;
+      max-width: 400px;
+      height: 150px;
+      text-align: center;
+      gap: 2px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+    }
+
+    input[type="submit"] {
+      padding: 10px;
+      border: none;
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      animation: rgbLightingBackground 3s infinite;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      transition: transform 75ms ease-in-out;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #000000;
+      color: #ffffff;
+      border-color: #ffffff;
+      box-shadow: 0 0 10px #ffffff;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Log Out</h1>
+    <form th:action="@{/welcome}" method="get">
+      <input type="submit" value="Go Back">
+    </form>
+  </div>
+</body>
+</html>

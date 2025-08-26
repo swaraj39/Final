@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-black flex justify-center items-center h-screen">
+  <div class="bg-gray-900 p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+    <h1 class="text-white text-2xl mb-6">Code Confirmation</h1>
+    <h3 class="text-white text-2xl mb-6"> Enter the OTP shared on <br> <span th:text="${email}"></span></h3>
+    <strong class="text-white text-2xl mb-6">Note: The code is valid for 30 seconds.</strong> 
+    <div class="loader-container mb-6">
+      <span class="emoji-loader">🔒</span>
+    </div>
+    <form id="codeForm" method="POST" th:action="@{/codewala}" class="space-y-6">
+      <div class="flex justify-between space-x-2">
+        <input type="text" maxlength="1" class="code-input w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" required>
+        <input type="text" maxlength="1" class="code-input w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" required>
+        <input type="text" maxlength="1" class="code-input w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" required>
+        <input type="text" maxlength="1" class="code-input w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" required>
+        <input type="text" maxlength="1" class="code-input w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" required>
+      </div>
+      <input type="hidden" id="fullCode" name="codes">
+      
+      <input type="submit" value="Verify" class="w-full py-3 bg-red-600 text-white rounded-md cursor-pointer hover:bg-black transform transition-transform duration-300 ease-in-out hover:scale-105">
+    </form>
+    
+    <div id="timer" class="text-white mt-4"></div>
+    <button id="resendBtn" class="w-full py-3 bg-blue-600 text-white rounded-md cursor-pointer mt-4 hidden" onclick="location.href='/resend'">Resend</button>
+  </div>
+
+  <script>
+    let timeRemaining = 30;
+    let timerInterval;
+    const timerElement = document.getElementById('timer');
+    const resendButton = document.getElementById('resendBtn');
+
+    function startTimer() {
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      if (timeRemaining > 0) {
+        timerElement.textContent = `Time Remaining: ${timeRemaining}s`;
+        timeRemaining--;
+      } else {
+        clearInterval(timerInterval);
+        timerElement.textContent = "Time's up!";
+        alert("Time's up! Please request a new code.");
+        resendButton.classList.remove('hidden');
+      }
+    }
+
+    window.onload = startTimer;
+
+    document.querySelectorAll('.code-input').forEach((input, index, inputs) => {
+      input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+    });
+
+    document.getElementById('codeForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const codeInputs = document.querySelectorAll('.code-input');
+      let fullCode = '';
+      codeInputs.forEach(input => {
+        fullCode += input.value;
+      });
+      document.getElementById('fullCode').value = fullCode;
+      this.submit();
+    });
+  </script>
+</body>
+</html>
