@@ -25,6 +25,8 @@ public class EmailService {
     private JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String sender;
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     // public String sendMail(int code, UserModel userModel) {
     // try {
@@ -53,7 +55,7 @@ public class EmailService {
             tokenRepo.save(t);
 
             // Build the reset URL
-            String url = "http://localhost:8080/setpassword?token=" + token;
+            String url = baseUrl + "/setpassword?token=" + token;
 
             // Create MIME message
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -69,11 +71,14 @@ public class EmailService {
                     "<p>Welcome to <strong>SRG Quizzz</strong>! We're excited to have you on board again.</p>" +
                     "<p>🎯 <strong>Your reset link is:</strong></p>" +
                     "<div style='font-size: 18px; padding: 10px;'>" +
-                    "<a href='" + url + "' style='color: #D35400; font-weight: bold;'>Click here to reset your password</a>" +
+                    "<a href='" + url
+                    + "' style='color: #D35400; font-weight: bold;'>Click here to reset your password</a>" +
                     "</div>" +
-                    "<p style='margin-top: 20px;'>🔒 <i>Please do not share this link with anyone. <br> Valid for 30 seconds</i></p>" +
+                    "<p style='margin-top: 20px;'>🔒 <i>Please do not share this link with anyone. <br> Valid for 30 seconds</i></p>"
+                    +
                     "<p>Thanks & Regards,<br><strong>Team SRG Quizzz</strong></p>" +
-                    "<img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png' alt='Quiz Icon' width='100' style='margin-top: 10px;'/>" +
+                    "<img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png' alt='Quiz Icon' width='100' style='margin-top: 10px;'/>"
+                    +
                     "</body></html>";
 
             // Set HTML content

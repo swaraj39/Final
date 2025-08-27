@@ -44,6 +44,7 @@ public class UserServiceIpl implements com.pack.demo.Services.UserService {
         long code = 0;
         userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
         UserModel user = new UserModel();
+        System.out.println(userModel.getAvatar());
         user.setId(userModel.getId());
         user.setName(userModel.getName());
         user.setPassword(userModel.getPassword());
@@ -175,5 +176,18 @@ public class UserServiceIpl implements com.pack.demo.Services.UserService {
 
     public UserModel loadUserByUsername(String id) {
         return userRepo.findById(id).orElse(null);
+    }
+
+    public boolean updateUser(UserModel user, String name) {
+        UserModel existingUser = userRepo.findById(name).orElse(null);
+        if (existingUser != null) {
+            existingUser.setName(user.getName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setPhoneno(user.getPhoneno());
+            existingUser.setAvatar(user.getAvatar());
+            userRepo.save(existingUser);
+            return true;
+        }
+        return false;
     }
 }

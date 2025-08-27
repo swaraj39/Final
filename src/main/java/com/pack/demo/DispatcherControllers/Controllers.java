@@ -94,6 +94,14 @@ public class Controllers {
         return "Us";
     }
 
+    @GetMapping("/profile")
+    public String profilePage(Authentication authentication, Model model) {
+        String name = authentication.getName();
+        UserModel user = userService1.loadUserByUsername(name);
+        model.addAttribute("user", user);
+        return "Update";
+    }
+    
     @RequestMapping("/demo")
     public String demoPage() {
         return "demo0";
@@ -122,6 +130,15 @@ public class Controllers {
     @RequestMapping("/forgot")
     public String forgot(){
         return "Forgot";
+    }
+
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") UserModel user, Model model, Authentication authentication) {
+        if( userService1.updateUser(user, authentication.getName())) {
+            model.addAttribute("successMessage", "Profile updated successfully!");
+            return "signup";
+        }
+        return "Update";
     }
 
     //TODO You should set the password mails selecting the token from the database and
@@ -162,7 +179,7 @@ public class Controllers {
     @GetMapping("/forgotlink")
     public String forgotlink(@RequestParam("email") String email, Model model){
         if(userService.forgotlink(email).equals("successful")) {
-            model.addAttribute("success", true);
+            model.addAttribute("email", true);
             return "signup";
         }
         return "new";
