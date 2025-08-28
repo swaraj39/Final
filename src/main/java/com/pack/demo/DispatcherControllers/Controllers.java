@@ -280,6 +280,8 @@ public class Controllers {
         float avg = avgs / (float) total * 100;
         if(avg == 0){ avg = 0; }
         List<ShowCateogry> showCateogries = questionService.findallbro();
+        model.addAttribute("quiz", showCateogries);
+        model.addAttribute("user", userModelList);
         model.addAttribute("reviews",review.findByName(name).size());
         model.addAttribute("show",showCateogries.stream().limit(5).toList());
         model.addAttribute("users",userModelList.stream().limit(5).toList());
