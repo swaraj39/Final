@@ -55,7 +55,7 @@ public class UserServiceIpl implements com.pack.demo.Services.UserService {
         user.setVerified(false);
         userRepo.save(user);
 
-        //TODO generating code
+        //todo generating code
         code = random.nextLong(10000, 99999);
 
 
@@ -98,6 +98,7 @@ public class UserServiceIpl implements com.pack.demo.Services.UserService {
            .filter(tc->tc.getDate().isBefore(LocalDateTime.now().minusMinutes(1)))
            .toList());
        }
+        //!important
         //TODO check the email in otp and validate
         UserModel userModel = userRepo.findByEmail(email);
         if (userModel == null) {

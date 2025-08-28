@@ -9,6 +9,8 @@ import com.pack.demo.Repository.DashBoardRepo;
 import com.pack.demo.Repository.Review;
 import com.pack.demo.Repository.StreakRepo;
 import com.pack.demo.Repository.TokenRepo;
+import com.pack.demo.Repository.UserRepo;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -54,8 +56,12 @@ public class Controllers {
     private StreakRepo streakRepo;
     @Autowired
     private TemplateEngine templateEngine;
+    @Autowired
+    private UserRepo userRepo;
 
-//TODO For Every request this executes
+//todo For Every request this executes
+//! executes
+// > This method is called before every request handling method
     @ModelAttribute
     public void setModelAttributes(Authentication authentication, Model model) {
         // If authentication is null, try reading from the security context
@@ -78,7 +84,7 @@ public class Controllers {
             model.addAttribute("name", null);
         }
     }
-    //TODO Used to show the welcome page along with the model attributes
+    //todo Used to show the welcome page along with the model attributes
     @RequestMapping({"/", "/welcome"})
     public String home(Model model) {
         System.out.println("Home page accessed" + userService1.findallusers().size());
@@ -141,8 +147,8 @@ public class Controllers {
         return "Update";
     }
 
-    //TODO You should set the password mails selecting the token from the database and
-    // check whether it is correct or not Or valid or not
+    //todo You should set the password mails selecting the token from the database and
+    //todo check whether it is correct or not Or valid or not
     @RequestMapping("/setpassword")
     public String set(@RequestParam("token") String token, Model model){
         Optional<Token> optionalToken = tokenRepo.findById(token);
@@ -163,7 +169,7 @@ public class Controllers {
         return "setpassword";
     }
 
-    //TODO It is used to change the password after token is validate
+    //todo It is used to change the password after token is validate
     @RequestMapping("/conform")
     public String change(@RequestParam("token") String token,
                          @RequestParam("password") String password){
@@ -175,7 +181,7 @@ public class Controllers {
     }
 
 
-    //TODO Used to send the forgot link to their respective email
+    //todo Used to send the forgot link to their respective email
     @GetMapping("/forgotlink")
     public String forgotlink(@RequestParam("email") String email, Model model){
         if(userService.forgotlink(email).equals("successful")) {
@@ -186,32 +192,44 @@ public class Controllers {
     }
 
 
-    //TODO Used to return the emails HTML page
+    //todo Used to return the emails HTML page
     @RequestMapping("/Email")
     public String emailPage() {
         return "Email";
     }
 
-    //TODO This is the process that what happens after the user write their credential after the Spring Security
+    //todo This is the process that what happens after the user write their credential after the Spring Security
     @RequestMapping("/home")
     public String home(Principal principal, Model model, Authentication authentication) {
         if (authentication != null) {
+            //? check for the user daily questions
+            UserModel user = userRepo.findById(authentication.getName()).get();
+            Streak streak = streakRepo.findByUserId(authentication.getName());
+            if(user.getDailyquestion().equals(LocalDate.now())){
+                
+            }
+            else {
+                streak.setLongestStreak(Math.max(streak.getLongestStreak(), streak.getCurrentStreak()));
+                streak.setCurrentStreak(0);
+                streakRepo.save(streak);
+            }
+
             model.addAttribute("name", authentication.getName());
             List<Reviwer> allReviews = review.findAll();
             Collections.shuffle(allReviews);
             List<Reviwer> limitedReviews = allReviews.stream().limit(3).toList();
             model.addAttribute("reviews", limitedReviews);
         }
-        return "new"; // or your home page
+        return "new"; //? or your home page
     }
 
-    //TODO Used to show the review page
+    //todo Used to show the review page
     @RequestMapping("/review")
     public String requestMethodName() {
         return "Review";
     }
 
-    //TODO Saving the review of the OF THE RESPECTIVE user
+    //todo Saving the review of the OF THE RESPECTIVE user
     @GetMapping("/saving")
     public String reviews(Authentication authentication, HttpServletRequest request, HttpServletResponse response,Model model, @RequestParam("text") String text){
         Reviwer r = new Reviwer(authentication.getName(),text);
@@ -222,10 +240,9 @@ public class Controllers {
         List<Reviwer> limitedReviews = allReviews.stream().limit(3).toList();
         model.addAttribute("reviews", limitedReviews);
         return "new";
-
     }
 
-    //TODO Usually show the activity of users
+    //todo Usually show the activity of users
     @RequestMapping("/progress")
     public String progress(Authentication authentication, Model model) {
         String name = authentication.getName();
@@ -247,7 +264,7 @@ public class Controllers {
         return "History";
     }
 
-    //TODO Used to show the dashboard page
+    //todo Used to show the dashboard page
     @GetMapping("/dashboard")
     public String dash(Authentication authentication, Model model,HttpSession session){
         String name = authentication.getName();
@@ -265,7 +282,7 @@ public class Controllers {
         List<ShowCateogry> showCateogries = questionService.findallbro();
         model.addAttribute("reviews",review.findByName(name).size());
         model.addAttribute("show",showCateogries.stream().limit(5).toList());
-        model.addAttribute("users",userModelList);
+        model.addAttribute("users",userModelList.stream().limit(5).toList());
         model.addAttribute("name", authentication.getName());
         model.addAttribute("number",list.size());
         model.addAttribute("lists",userService1.findallusers().stream().filter(u->u.isVerified()).toList().size());
@@ -277,19 +294,19 @@ public class Controllers {
         return "DashBoard";
     }
 
-    //TODO Used to generate OTP and send to the email along send In the Database
+    //todo Used to generate OTP and send to the email along send In the Database
     @PostMapping("/signups")
     public String signup(@ModelAttribute UserModel userModel, HttpSession session, Model model) {
         return userService.processSignup(userModel, session,model);
     }
 
-    //TODO It is used to send the new OTP to the email
+    //todo It is used to send the new OTP to the email
     @RequestMapping(value = "/resend", method = { RequestMethod.GET, RequestMethod.POST })
     public String resendOtp(HttpSession session, RedirectAttributes redirectAttributes) {
         return userService.resendOtp(session, redirectAttributes);
     }
 
-    //TODO Used to verify the CODE
+    //todo Used to verify the CODE
     @PostMapping("/codewala")
     public String verifyOtp(@RequestParam("codes") Long code, @RequestParam("email") String email,
                             HttpSession session, Model model) {
@@ -298,7 +315,7 @@ public class Controllers {
         return userService.verifyOtp(code,email, session, model);
     }
 
-    //TODO Used to send mail to the admin for user Query
+    //todo Used to send mail to the admin for user Query
     @PostMapping("/contact")
     public String contact(@RequestParam("name") String name,
                           @RequestParam("email") String email,
@@ -307,19 +324,19 @@ public class Controllers {
         return userService.handleContact(name, email, message, model);
     }
 
-    //TODO Used to save the user
+    //todo Used to save the user
     @GetMapping("/usersave")
     public String userSaved(@ModelAttribute UserModel userModel) {
         return userService.saveUser(userModel);
     }
 
-    //TODO Tell the user let us use by me firstly
+    //todo Tell the user let us use by me firstly
     @GetMapping("/UserEnter")
     public String enter(HttpSession session) {
         return userService.handleUserEntry(session);
     }
 
-    //TODO Used to log out that invalidate the session
+    //todo Used to log out that invalidate the session
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

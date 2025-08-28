@@ -1,14 +1,15 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>
-        Update Account
-    </title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
+    <title>Update Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <style>
         :root {
             --primary-red: #e11d48;
@@ -21,6 +22,13 @@
             --text-gray: #a3a3a3;
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
         body {
             background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
             color: var(--text-light);
@@ -29,18 +37,54 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(225, 29, 72, 0.05) 0%, transparent 70%);
+            animation: pulse 15s infinite alternate;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(10%, 10%) rotate(10deg);
+                opacity: 0.5;
+            }
         }
 
         .red-card {
             background: rgba(23, 23, 23, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(225, 29, 72, 0.25);
-            border-radius: 16px;
-            max-width: 420px;
+            border-radius: 20px;
+            max-width: 480px;
             width: 100%;
             margin: 0 auto;
-            padding: 1.5rem 1.75rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .red-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.6);
         }
 
         .red-gradient-text {
@@ -48,11 +92,25 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-weight: 700;
         }
 
         .button-red {
             background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button-red::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
         }
 
         .button-red:hover {
@@ -61,43 +119,157 @@
             box-shadow: 0 8px 20px -5px rgba(225, 29, 72, 0.4);
         }
 
+        .button-red:hover::before {
+            left: 100%;
+        }
+
         .input-field {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(225, 29, 72, 0.25);
             color: var(--text-light);
             transition: all 0.3s ease;
             font-size: 0.95rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+            padding: 0.9rem 1.2rem;
+            border-radius: 0.75rem;
+            width: 100%;
         }
 
         .input-field:focus {
             outline: none;
             border-color: var(--primary-red);
             box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
         }
 
         .input-field::placeholder {
             color: var(--text-gray);
         }
 
-        input[type="radio"].peer:checked+img {
+        input[type="radio"].peer:checked + img {
             border-color: #e11d48;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+        }
+
+        .avatar-option img {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .avatar-option:hover img {
+            transform: scale(1.1);
+            border-color: rgba(225, 29, 72, 0.5);
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: var(--text-gray);
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: var(--primary-red);
+        }
+
+        @media (max-width: 640px) {
+            .red-card {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+            
+            .avatar-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .input-field {
+                padding: 0.8rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .red-card {
+                padding: 1.25rem;
+            }
+            
+            .avatar-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .avatar-option {
+            display: flex;
+            justify-content: center;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
         }
     </style>
 </head>
 
 <body>
+    <a href="#" class="back-button">
+        <i class="fas fa-arrow-left text-xl"></i>
+    </a>
+
     <div class="red-card" id="sign-up-form">
-        <h2 class="text-xl font-bold text-white mb-6 text-center">
-            Update Account
+        <div class="success-message" id="success-message">
+            <i class="fas fa-check-circle mr-2"></i>
+            Your account has been updated successfully!
+        </div>
+
+        <h2 class="text-2xl font-bold text-white mb-2 text-center">
+            Update Your <span class="red-gradient-text">Account</span>
         </h2>
-        <form action="/update" class="space-y-5" method="POST">
-            <div>
-                <div class="form-section">
-                    <label class="block text-gray-300 mb-2 text-sm">Avatar</label>
-                    <div class="flex space-x-3">
+        <p class="text-gray-400 text-center mb-6">Keep your information up to date</p>
+        
+        <form action="/update" class="space-y-5" method="POST" id="update-form">
+            <div class="form-section">
+                <label class="block text-gray-300 mb-3 text-sm font-medium">Choose Avatar</label>
+                 <div class="flex space-x-3">
                         <label class="cursor-pointer">
                             <input type="radio" name="avatar" value="Avtar1.png" class="hidden peer" required
                                 th:checked="${user.avatar == 'Avtar1.png'}">
@@ -124,34 +296,97 @@
                         </label>
                     </div>
                 </div>
-            </div>
+            
             <div>
                 <label class="block text-gray-300 mb-2 text-sm font-medium" for="name">
-                    Name
+                    <i class="fas fa-user mr-2 text-red-500"></i>Full Name
                 </label>
-                <input class="w-full input-field" id="name" name="name" placeholder="Your Name" required="" type="text"
-                    th:value="${user.name}" />
+                <div class="input-group">
+                    <input class="input-field" id="name" name="name" placeholder="Your Name" required type="text" th:value="${user.name}" />
+                    <span class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </span>
+                </div>
             </div>
+            
             <div>
                 <label class="block text-gray-300 mb-2 text-sm font-medium" for="email">
-                    Email Address
+                    <i class="fas fa-envelope mr-2 text-red-500"></i>Email Address
                 </label>
-                <input class="w-full input-field" id="email" name="email" placeholder="you@example.com" required=""
-                    type="email" th:value="${user.email}" />
+                <div class="input-group">
+                    <input class="input-field" id="email" name="email" placeholder="you@example.com" required type="email" th:value="${user.email}" />
+                    <span class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
             </div>
+            
             <div>
                 <label class="block text-gray-300 mb-2 text-sm font-medium" for="phoneno">
-                    Phone
+                    <i class="fas fa-phone mr-2 text-red-500"></i>Phone Number
                 </label>
-                <input class="w-full input-field" id="phoneno" name="phoneno" placeholder="Your Phone Number" type="tel"
-                    th:value="${user.phoneno}" />
+                <div class="input-group">
+                    <input class="input-field" id="phoneno" name="phoneno" placeholder="Your Phone Number" type="tel" th:value="${user.phoneno}" />
+                    <span class="input-icon">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                </div>
             </div>
-            <button class="w-full button-red text-white py-2.5 rounded-lg font-semibold text-sm" id="sign-up-btn"
-                type="submit">
-                Update
+            
+            <button class="w-full button-red text-white py-3 rounded-xl font-semibold text-sm mt-2 flex items-center justify-center" id="update-btn" type="submit">
+                <i class="fas fa-sync-alt mr-2"></i> Update Account
             </button>
         </form>
     </div>
-</body>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function(e) {
+            const form = document.getElementById('update-form');
+            const successMessage = document.getElementById('success-message');
+
+            document.getElementById('update-btn').addEventListener('click', function() {
+                // Show loading state
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
+                document.getElementById('update-form').submit();
+                this.disabled = true;
+                e.preventDefault();
+            });
+
+            // form.addEventListener('submit', function() {
+                
+                
+            //     // Simulate form submission
+            //     const submitBtn = document.getElementById('update-btn');
+            //     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
+            //     form.submit();
+            //     submitBtn.disabled = true;
+                
+            //     // setTimeout(function() {
+            //     //     successMessage.style.display = 'block';
+            //     //     submitBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Update Account';
+            //     //     submitBtn.disabled = false;
+                    
+            //     //     // Hide success message after 5 seconds
+            //     //     setTimeout(function() {
+            //     //         successMessage.style.display = 'none';
+            //     //     }, 5000);
+            //     // }, 1500);
+                
+            //     form.submit();
+            // });
+            
+            // Add animation to input fields when focused
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('animate-pulse');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('animate-pulse');
+                });
+            });
+        });
+    </script>
+</body>
 </html>
