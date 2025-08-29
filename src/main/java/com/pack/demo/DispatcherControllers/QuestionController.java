@@ -254,7 +254,7 @@ public class QuestionController {
     //TODO Evaluate the quiz and produce the score of the user
     @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
     public String submitQuiz(@RequestParam Map<String, String> answers, Model model, HttpSession session,
-            Authentication authentication, @RequestParam("category") String category, @RequestParam("start") String start) {
+            Authentication authentication, @RequestParam("categoryValue") String category, @RequestParam("start") String start) {
         
         List<QuestionModel> randomQuestions = (List<QuestionModel>) session.getAttribute("randomQuestions");
 
