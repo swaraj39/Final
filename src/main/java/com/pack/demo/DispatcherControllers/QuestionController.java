@@ -165,8 +165,9 @@ public class QuestionController {
         List<QuestionModel> questions = questionService.findByCateogry(categoryId);
         Collections.shuffle(questions);
         Set<QuestionModel> questionModels = questions.stream().limit(10).collect(Collectors.toSet());
+        List<QuestionModel> questionModels1 = new ArrayList<>(questionModels);
         System.out.println("Random questions selected: " + questionModels.size());
-        session.setAttribute("randomQuestions", questionModels);
+        session.setAttribute("randomQuestions", questionModels1);
         model.addAttribute("category", categoryId);
         model.addAttribute("result", questionModels);
         model.addAttribute("start", LocalTime.now());
