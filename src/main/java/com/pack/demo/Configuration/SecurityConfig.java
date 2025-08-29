@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     // Allow public access to the login page and the welcome page
                     auth.requestMatchers( "/","/welcome","/demo","/signup", "/signups", "/resend", "/codewala",
-                    "/forgot", "/forgotlink", "/setpassword", "/conform", "/us").permitAll()
+                    "/forgot", "/forgotlink", "/setpassword", "/conform", "/us", "/ceo").permitAll()
                     .requestMatchers("/images/**", "/css/**", "/js/**").permitAll();
                     auth.requestMatchers("/ques/add").hasRole("ADMIN");
                     auth.anyRequest().authenticated(); // Require authentication for all other requests

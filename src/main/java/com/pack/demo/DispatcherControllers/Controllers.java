@@ -87,6 +87,12 @@ public class Controllers {
             model.addAttribute("name", null);
         }
     }
+
+    @RequestMapping("/ceo")
+    public String ceoPage() {
+        return "demo0";
+    }
+
     //todo Used to show the welcome page along with the model attributes
     @RequestMapping({"/", "/welcome"})
     public String home(Model model) {
