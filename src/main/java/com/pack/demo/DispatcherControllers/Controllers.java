@@ -219,7 +219,9 @@ public class Controllers {
                 streak.setCurrentStreak(0);
                 streakRepo.save(streak);
             }
-
+            if(user.getDailyquestion() == null || user.getDailyquestion().equals(LocalDate.now())){
+                model.addAttribute("solved", "true");
+            }
             model.addAttribute("name", authentication.getName());
             List<Reviwer> allReviews = review.findAll();
             Collections.shuffle(allReviews);

@@ -192,7 +192,9 @@ public class QuestionController {
             TimeQuestion dailyQuestion = timeQuestion1.get();
             UserModel userModel = user.get();
             if(userModel.getDailyquestion() != null && userModel.getDailyquestion().equals(dailyQuestion.getDate())){
+                //model.addAttribute("solved",true);
                 System.out.println("User has already attempted today's question.");
+                return "redirect:/home";
             }
             else{
                 System.out.println("User is attempting today's question.");

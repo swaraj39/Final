@@ -238,11 +238,20 @@
                             <!-- <div class="bg-red-600 text-white text-sm px-3 py-1 rounded-full">
                                 4.8 <i class="fas fa-star ml-1"></i>
                             </div> -->
+                            <div class="" id="solve" th:if="${solved}">
+                                <div class="bg-green-600 text-white text-sm px-3 py-1 rounded-full cursor-not-allowed" >
+                                    Already Solved
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
                     <form action="/ques/dailyQuestion" method="POST">
-                        <button class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow">
+                        <button class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow" th:if="${!solved}">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Take Daily Challenge
+                        </button>
+                         <button class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow cursor-not-allowed" th:if="${solved}">
                             <i class="fas fa-bolt mr-2"></i>
                             Take Daily Challenge
                         </button>
