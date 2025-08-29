@@ -209,7 +209,12 @@ public class Controllers {
             if(user.getDailyquestion().equals(LocalDate.now())){
                 
             }
-            else {
+            else if(user.getDailyquestion().equals(LocalDate.now().minusDays(1))){
+                streak.setLongestStreak(Math.max(streak.getLongestStreak(), streak.getCurrentStreak()));
+                //streak.setCurrentStreak(0);
+                streakRepo.save(streak);
+            }
+            else{
                 streak.setLongestStreak(Math.max(streak.getLongestStreak(), streak.getCurrentStreak()));
                 streak.setCurrentStreak(0);
                 streakRepo.save(streak);
