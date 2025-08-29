@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 // import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ public class UserModel implements UserDetails {
     private Role role;
     private LocalDate dailyquestion;
     private String avatar;
+    private LocalDateTime lastlogin;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Streak streak;

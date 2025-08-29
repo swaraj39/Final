@@ -204,6 +204,7 @@ public class Controllers {
         if (authentication != null) {
             //? check for the user daily questions
             UserModel user = userRepo.findById(authentication.getName()).get();
+            user.setLastlogin(LocalDateTime.now());
             Streak streak = streakRepo.findByUserId(authentication.getName());
             if(user.getDailyquestion().equals(LocalDate.now())){
                 
