@@ -222,6 +222,9 @@ public class Controllers {
             if(user.getDailyquestion() == null || user.getDailyquestion().equals(LocalDate.now())){
                 model.addAttribute("solved", "true");
             }
+            else{
+                model.addAttribute("solved", "false");
+            }
             model.addAttribute("name", authentication.getName());
             List<Reviwer> allReviews = review.findAll();
             Collections.shuffle(allReviews);
