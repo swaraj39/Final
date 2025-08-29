@@ -4,6 +4,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.pack.demo.Implementation.QuestionServiceImpl;
 import com.pack.demo.Implementation.UserServiceIpl;
 import com.pack.demo.ModelDAO.*;
+import com.pack.demo.Repository.CategoryRepo;
 import com.pack.demo.Repository.DailyRepo;
 import com.pack.demo.Repository.DashBoardRepo;
 import com.pack.demo.Repository.Review;
@@ -58,6 +59,8 @@ public class Controllers {
     private TemplateEngine templateEngine;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
 
 //todo For Every request this executes
 //! executes
@@ -90,7 +93,7 @@ public class Controllers {
         System.out.println("Home page accessed" + userService1.findallusers().size());
         model.addAttribute("user", userService1.findallusers().stream().filter(u->u.isVerified()).toList().size());
         model.addAttribute("codingQuestions", questionService.getAllQuestions().size());
-        model.addAttribute("programmingLanguages", questionService.findallbro().size());
+        model.addAttribute("programmingLanguages", categoryRepo.findAll().size());
         model.addAttribute("satisfactionRate", 90);
         return "About";
     }

@@ -190,6 +190,7 @@
             </h1>
             <p class="text-gray-400 mt-2">Test your knowledge against the clock!</p>
             <span class="text-4xl text-white " name="category" th:value="${category} + 'Questions'" th:text="${category} + ' Questions'"></span>
+            
 
         </div>
 
@@ -206,7 +207,7 @@
         <div class="question-indicator text-white hover:cursor-pointer" id="questionIndicator"></div>
        
         <form id="quizForm" action="/ques/submitQuiz" method="post">
-            <input type="hidden" name="category" th:value="${category}">
+            <input type="hidden" name="categoryValue" th:value="${category}">
             <input type="hidden" name="start" th:value="${start}">
             <div id="questionsContainer">
                 <div th:each="question, status : ${result}" class="question-card hidden" th:id="'q' + ${question.id}">

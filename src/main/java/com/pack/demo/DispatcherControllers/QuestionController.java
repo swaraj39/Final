@@ -6,6 +6,7 @@ import com.pack.demo.Services.QuestionService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties.Http;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,7 +98,7 @@ public class QuestionController {
 
     //todo Executive before start a quiz
     @RequestMapping("/before")
-    public String index(Authentication authentication, Model model) {
+    public String index(Authentication authentication, Model model, HttpSession session) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Month month = LocalDate.now().getMonth();
         long count = dashBoardRepo.findByUsersId(name).stream()
@@ -109,6 +110,7 @@ public class QuestionController {
         }
         model.addAttribute("categories", questionService.selectbycateogry());
         //return "Startbefore";
+        session.setAttribute("started", null);
         return "demo";
     }
 
@@ -158,6 +160,7 @@ public class QuestionController {
     //todo It is used for setting the random questions then used to start quiz
     @GetMapping(value = "/test")
     public String showRandomQuestions(HttpSession session, Model model, @RequestParam("categoryValue") String categoryId) {
+        
         if ("yes".equals(session.getAttribute("started"))) {
             session.setAttribute("started", null);
         return "redirect:/ques/before";  // Optional page saying "You cannot reload the quiz"
