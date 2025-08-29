@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Quiz Forge - Professional Quiz Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <style>
         :root {
@@ -19,75 +21,75 @@
             --text-light: #fafafa;
             --text-gray: #a3a3a3;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
         }
-        
+
         body {
             background: linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
             color: var(--text-light);
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
+
         .red-card {
             background: linear-gradient(135deg, rgba(225, 29, 72, 0.15) 0%, rgba(190, 18, 60, 0.1) 100%);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(225, 29, 72, 0.2);
             border-radius: 16px;
         }
-        
+
         .red-gradient-text {
             background: linear-gradient(135deg, var(--primary-red), var(--light-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .red-hero-gradient {
             background: linear-gradient(135deg, var(--dark-red) 0%, var(--primary-red) 100%);
         }
-        
+
         .button-red {
             background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
             transition: all 0.3s ease;
         }
-        
+
         .button-red:hover {
             background: linear-gradient(135deg, var(--light-red) 0%, var(--primary-red) 100%);
             transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
         }
-        
+
         .button-outline-red {
             background: transparent;
             border: 2px solid var(--primary-red);
             transition: all 0.3s ease;
         }
-        
+
         .button-outline-red:hover {
             background: var(--primary-red);
             transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
         }
-        
+
         .feature-card {
             transition: all 0.3s ease;
         }
-        
+
         .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(225, 29, 72, 0.2);
         }
-        
+
         .nav-link {
             position: relative;
         }
-        
+
         .nav-link::after {
             content: '';
             position: absolute;
@@ -98,37 +100,56 @@
             background: var(--primary-red);
             transition: width 0.3s ease;
         }
-        
+
         .nav-link:hover::after {
             width: 100%;
         }
-        
+
         .typewriter {
             overflow: hidden;
             border-right: .15em solid var(--primary-red);
             white-space: nowrap;
             animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
         }
-        
+
         @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
         }
-        
+
         @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--primary-red); }
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: var(--primary-red);
+            }
         }
-        
+
         .floating {
             animation: float 6s ease-in-out infinite;
         }
-        
+
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
-        
+
         .red-particle {
             position: absolute;
             border-radius: 50%;
@@ -136,27 +157,30 @@
             animation: float 8s infinite ease-in-out;
             opacity: 0.3;
         }
-        
+
         .red-glow {
             box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
         }
-        
+
         .red-glow:hover {
             box-shadow: 0 0 25px rgba(225, 29, 72, 0.7);
         }
     </style>
 </head>
+
 <body class="antialiased">
     <!-- Navigation -->
-    <header class="fixed w-full z-50 py-4 px-6 md:px-12 bg-black bg-opacity-90 backdrop-blur-md border-b border-red-900">
+    <header
+        class="fixed w-full z-50 py-4 px-6 md:px-12 bg-black bg-opacity-90 backdrop-blur-md border-b border-red-900">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center">
-                <div class="w-10 h-10 rounded-full red-hero-gradient flex items-center justify-center text-white font-bold text-xl mr-3">
+                <div
+                    class="w-10 h-10 rounded-full red-hero-gradient flex items-center justify-center text-white font-bold text-xl mr-3">
                     <i class="fas fa-fire"></i>
                 </div>
                 <span class="text-2xl font-bold text-white">Quiz<span class="red-gradient-text">Forge</span></span>
             </div>
-            
+
             <nav class="hidden md:flex space-x-8">
                 <a class="text-gray-300 hover:text-white nav-link" href="#">Home</a>
                 <a class="text-gray-300 hover:text-white nav-link" href="#features">Features</a>
@@ -164,7 +188,7 @@
                 <a class="text-gray-300 hover:text-white nav-link" href="#reviews">Reviews</a>
                 <a class="text-gray-300 hover:text-white nav-link" href="#contact">Contact</a>
             </nav>
-            
+
             <div class="flex items-center space-x-4">
                 <form action="/dashboard">
                     <button class="button-red text-white px-4 py-2 rounded-full text-sm font-medium">
@@ -184,10 +208,14 @@
     <section class="min-h-screen flex items-center pt-24 pb-16 px-6 md:px-12 relative overflow-hidden">
         <!-- Animated Background -->
         <div class="absolute inset-0 opacity-20">
-            <div class="absolute top-1/4 left-1/4 w-72 h-72 red-hero-gradient rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-            <div class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-red-800 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
+            <div
+                class="absolute top-1/4 left-1/4 w-72 h-72 red-hero-gradient rounded-full filter blur-3xl opacity-20 animate-pulse">
+            </div>
+            <div
+                class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-red-800 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-2000">
+            </div>
         </div>
-        
+
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
             <div class="text-center lg:text-left">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
@@ -195,7 +223,7 @@
                     <span class="typewriter">Master Any Subject</span>
                 </h1>
                 <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-xl mx-auto lg:mx-0">
-                    QuizForge is the professional platform for creating, practicing, and mastering quizzes. 
+                    QuizForge is the professional platform for creating, practicing, and mastering quizzes.
                     Elevate your learning experience with our advanced tools and analytics.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -204,12 +232,13 @@
                             Start Quizzing
                         </button>
                     </form>
-                    <a href="#features" class="button-outline-red text-white font-semibold text-lg px-8 py-3 rounded-full text-center">
+                    <a href="#features"
+                        class="button-outline-red text-white font-semibold text-lg px-8 py-3 rounded-full text-center">
                         Explore Features
                     </a>
                 </div>
             </div>
-            
+
             <div class="relative">
                 <div class="red-card p-8 rounded-2xl floating">
                     <div class="flex justify-between items-center mb-6">
@@ -219,15 +248,17 @@
                             <span>Trending</span>
                         </div>
                     </div>
-                    
+
                     <div class="red-card rounded-xl p-4 mb-6 border border-red-800">
                         <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 red-hero-gradient rounded-full flex items-center justify-center text-white">
+                            <div
+                                class="w-12 h-12 red-hero-gradient rounded-full flex items-center justify-center text-white">
                                 <i class="fas fa-globe-americas"></i>
                             </div>
                             <div class="ml-4">
                                 <h4 class="font-semibold text-white" th:text="${daily.question}">World Capitals</h4>
-                                <p class="text-gray-400 text-sm" th:text="${daily.date}">15 questions  </p><p class="text-gray-300" th:text="${daily.level}"></p>
+                                <p class="text-gray-400 text-sm" th:text="${daily.date}">15 questions </p>
+                                <p class="text-gray-300" th:text="${daily.level}"></p>
                             </div>
                         </div>
                         <div class="flex justify-between items-center">
@@ -239,32 +270,41 @@
                                 4.8 <i class="fas fa-star ml-1"></i>
                             </div> -->
                             <div class="" id="solve" th:if="${solved}">
-                                <div class="bg-green-600 text-white text-sm px-3 py-1 rounded-full cursor-not-allowed">
-                                    <i class="fas fa-check mr-1"></i>
-                                    Already Solved
-                                </div>
+                                <button
+                                    class="bg-green-600 text-white text-sm px-3 py-1 rounded-full cursor-not-allowed">
+                                    <div
+                                        class="bg-green-600 text-white text-sm px-3 py-1 rounded-full cursor-not-allowed">
+                                        <i class="fas fa-check mr-1"></i>
+                                        Already Solved
+                                </button>
+
                             </div>
+                            
                             <div class="" id="solve" th:if="${!solved}">
-                                <div class="bg-red-600 text-white text-sm px-3 py-1 rounded-full cursor-not-allowed" >
+                                <div class="bg-red-600 text-white text-sm px-3 py-1 rounded-full cursor-not-allowed">
                                     <i class="far fa-times-circle mr-1"></i>
                                     Not Solved
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <form action="/ques/dailyQuestion" method="POST">
-                        <button class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow" th:if="${!solved}">
+                        <button
+                            class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow"
+                            th:if="${!solved}">
                             <i class="fas fa-bolt mr-2"></i>
                             Take Daily Challenge
                         </button>
-                         <button class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow cursor-not-allowed" th:if="${solved}">
+                        <button
+                            class="w-full button-red text-white py-3 rounded-xl font-medium flex items-center justify-center red-glow cursor-not-allowed"
+                            th:if="${solved}">
                             <i class="fas fa-bolt mr-2"></i>
                             Take Daily Challenge
                         </button>
                     </form>
                 </div>
-                
+
                 <!-- Decorative elements -->
                 <div class="absolute -top-6 -right-6 w-28 h-28 red-hero-gradient rounded-full opacity-20 blur-xl"></div>
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-red-800 rounded-full opacity-20 blur-xl"></div>
@@ -276,15 +316,17 @@
     <section id="features" class="py-16 px-6 md:px-12 bg-black bg-opacity-50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Professional <span class="red-gradient-text">Features</span></h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Professional <span
+                        class="red-gradient-text">Features</span></h2>
                 <p class="text-gray-300 text-lg max-w-2xl mx-auto">
                     Advanced tools designed to enhance your learning and quiz creation experience
                 </p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="feature-card red-card p-6 rounded-2xl">
-                    <div class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
+                    <div
+                        class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
                         <i class="fas fa-brain"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Practice Questions</h3>
@@ -296,9 +338,10 @@
                         <i class="fas fa-arrow-right ml-2 text-sm"></i>
                     </a>
                 </div>
-                
+
                 <div class="feature-card red-card p-6 rounded-2xl">
-                    <div class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
+                    <div
+                        class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
                         <i class="fas fa-edit"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Create Questions</h3>
@@ -310,9 +353,10 @@
                         <i class="fas fa-arrow-right ml-2 text-sm"></i>
                     </a>
                 </div>
-                
+
                 <div class="feature-card red-card p-6 rounded-2xl">
-                    <div class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
+                    <div
+                        class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Progress Analytics</h3>
@@ -324,9 +368,10 @@
                         <i class="fas fa-arrow-right ml-2 text-sm"></i>
                     </a>
                 </div>
-                
+
                 <div class="feature-card red-card p-6 rounded-2xl">
-                    <div class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
+                    <div
+                        class="w-16 h-16 red-hero-gradient rounded-xl flex items-center justify-center text-2xl text-white mb-4">
                         <i class="fas fa-share-alt"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Share & Collaborate</h3>
@@ -346,15 +391,17 @@
     <section id="how-it-works" class="py-16 px-6 md:px-12 bg-black">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">How <span class="red-gradient-text">QuizForge</span> Works</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">How <span class="red-gradient-text">QuizForge</span>
+                    Works</h2>
                 <p class="text-gray-300 text-lg max-w-2xl mx-auto">
                     Follow these simple steps to maximize your learning potential
                 </p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="flex flex-col items-center text-center">
-                    <div class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
+                    <div
+                        class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
                         <span class="text-2xl font-bold">1</span>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Sign Up & Log In</h3>
@@ -362,9 +409,10 @@
                         Create your account to access personalized features and track your progress.
                     </p>
                 </div>
-                
+
                 <div class="flex flex-col items-center text-center">
-                    <div class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
+                    <div
+                        class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
                         <span class="text-2xl font-bold">2</span>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Choose Content</h3>
@@ -372,9 +420,10 @@
                         Select from pre-made quizzes or create your own custom question sets.
                     </p>
                 </div>
-                
+
                 <div class="flex flex-col items-center text-center">
-                    <div class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
+                    <div
+                        class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
                         <span class="text-2xl font-bold">3</span>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Practice & Learn</h3>
@@ -382,9 +431,10 @@
                         Answer questions, receive instant feedback, and understand concepts better.
                     </p>
                 </div>
-                
+
                 <div class="flex flex-col items-center text-center">
-                    <div class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
+                    <div
+                        class="w-20 h-20 red-hero-gradient rounded-full flex items-center justify-center text-2xl text-white mb-6">
                         <span class="text-2xl font-bold">4</span>
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-3">Track Progress</h3>
@@ -400,16 +450,18 @@
     <section id="reviews" class="py-16 px-6 md:px-12 bg-black bg-opacity-50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Our <span class="red-gradient-text">Users</span> Say</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Our <span class="red-gradient-text">Users</span>
+                    Say</h2>
                 <p class="text-gray-300 text-lg max-w-2xl mx-auto">
                     Discover why professionals and learners choose QuizForge
                 </p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div th:each="review : ${reviews}" class="red-card p-6 rounded-2xl">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 red-hero-gradient rounded-full flex items-center justify-center text-white font-bold">
+                        <div
+                            class="w-12 h-12 red-hero-gradient rounded-full flex items-center justify-center text-white font-bold">
                             <span th:text="${review.name.substring(0, 1)}">U</span>
                         </div>
                         <div class="ml-4">
@@ -424,7 +476,8 @@
                         </div>
                     </div>
                     <p class="text-gray-300 italic" th:text="${review.reviews}">
-                        "QuizForge has transformed the way I prepare for exams. The daily questions keep me sharp and motivated!"
+                        "QuizForge has transformed the way I prepare for exams. The daily questions keep me sharp and
+                        motivated!"
                     </p>
                 </div>
             </div>
@@ -435,7 +488,8 @@
     <section class="py-20 px-6 md:px-12 relative overflow-hidden">
         <div class="absolute inset-0 red-hero-gradient opacity-10"></div>
         <div class="max-w-4xl mx-auto text-center relative z-10">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to <span class="red-gradient-text">Forge</span> Your Knowledge?</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to <span class="red-gradient-text">Forge</span> Your
+                Knowledge?</h2>
             <p class="text-gray-300 text-lg mb-8">
                 Join thousands of professionals and learners who use QuizForge to master new subjects
             </p>
@@ -461,21 +515,24 @@
                     Have questions or feedback? We'd love to hear from you.
                 </p>
             </div>
-            
+
             <form class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="name" class="block text-gray-300 mb-2">Your Name</label>
-                        <input type="text" id="name" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <input type="text" id="name"
+                            class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600">
                     </div>
                     <div>
                         <label for="email" class="block text-gray-300 mb-2">Your Email</label>
-                        <input type="email" id="email" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <input type="email" id="email"
+                            class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600">
                     </div>
                 </div>
                 <div>
                     <label for="message" class="block text-gray-300 mb-2">Your Message</label>
-                    <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                    <textarea id="message" rows="4"
+                        class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
                 </div>
                 <button type="submit" class="w-full button-red text-white py-3 rounded-lg font-semibold red-glow">
                     Send Message
@@ -490,61 +547,73 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
                 <div class="lg:col-span-2">
                     <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 red-hero-gradient rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
+                        <div
+                            class="w-10 h-10 red-hero-gradient rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
                             <i class="fas fa-fire"></i>
                         </div>
-                        <span class="text-2xl font-bold text-white">Quiz<span class="red-gradient-text">Forge</span></span>
+                        <span class="text-2xl font-bold text-white">Quiz<span
+                                class="red-gradient-text">Forge</span></span>
                     </div>
                     <p class="text-gray-400 mb-6 max-w-md">
-                        The professional platform for creating, practicing, and mastering quizzes. 
+                        The professional platform for creating, practicing, and mastering quizzes.
                         Elevate your learning experience with our advanced tools and analytics.
                     </p>
                     <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-colors">
                             <i class="fab fa-github"></i>
                         </a>
                     </div>
                 </div>
-                
+
                 <div>
                     <h3 class="text-white font-semibold mb-4">Product</h3>
                     <ul class="space-y-3">
-                        <li><a href="/ques/getall" class="text-gray-400 hover:text-red-400 transition-colors">Practice Questions</a></li>
-                        <li><a href="/ques/add" class="text-gray-400 hover:text-red-400 transition-colors">Create Quizzes</a></li>
-                        <li><a href="/progress" class="text-gray-400 hover:text-red-400 transition-colors">Progress Tracking</a></li>
+                        <li><a href="/ques/getall" class="text-gray-400 hover:text-red-400 transition-colors">Practice
+                                Questions</a></li>
+                        <li><a href="/ques/add" class="text-gray-400 hover:text-red-400 transition-colors">Create
+                                Quizzes</a></li>
+                        <li><a href="/progress" class="text-gray-400 hover:text-red-400 transition-colors">Progress
+                                Tracking</a></li>
                         <li><a href="/prize" class="text-gray-400 hover:text-red-400 transition-colors">Pricing</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h3 class="text-white font-semibold mb-4">Company</h3>
                     <ul class="space-y-3">
                         <li><a href="#" class="text-gray-400 hover:text-red-400 transition-colors">About Us</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-red-400 transition-colors">Careers</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-red-400 transition-colors">Blog</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-red-400 transition-colors">Contact</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-red-400 transition-colors">Contact</a>
+                        </li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h3 class="text-white font-semibold mb-4">Stay Updated</h3>
                     <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest updates</p>
                     <form class="flex flex-col space-y-2">
-                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600">
-                        <button type="submit" class="button-red text-white py-2 rounded-lg font-medium">Subscribe</button>
+                        <input type="email" placeholder="Your email"
+                            class="px-4 py-2 rounded-lg bg-gray-900 border border-red-800 text-white focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <button type="submit"
+                            class="button-red text-white py-2 rounded-lg font-medium">Subscribe</button>
                     </form>
                 </div>
             </div>
-            
+
             <div class="pt-8 border-t border-red-900 text-center text-gray-500 text-sm">
                 <p>© 2024 QuizForge. All rights reserved.</p>
             </div>
@@ -556,25 +625,25 @@
         function createParticles() {
             const container = document.getElementById('particles-container');
             const particleCount = 30;
-            
+
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('red-particle');
-                
+
                 // Random properties
                 const size = Math.random() * 6 + 2;
                 const posX = Math.random() * 100;
                 const posY = Math.random() * 100;
                 const delay = Math.random() * 5;
                 const duration = Math.random() * 10 + 5;
-                
+
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${posX}%`;
                 particle.style.top = `${posY}%`;
                 particle.style.animationDelay = `${delay}s`;
                 particle.style.animationDuration = `${duration}s`;
-                
+
                 container.appendChild(particle);
             }
         }
@@ -585,4 +654,5 @@
         });
     </script>
 </body>
+
 </html>
