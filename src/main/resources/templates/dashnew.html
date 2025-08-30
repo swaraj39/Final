@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Sections</title>
+  <style>
+    body {
+      display: flex;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .sidebar {
+      width: 200px;
+      background: #333;
+      color: white;
+      padding: 20px;
+      height: 100vh;
+    }
+    .sidebar button {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      padding: 10px;
+      background: #444;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      background: #555;
+    }
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+    .section {
+      display: none; /* hide all by default */
+    }
+    .section.active {
+      display: block; /* show the active one */
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('patients')">Patients</button>
+    <button onclick="showSection('opd')">OPD</button>
+    <button onclick="showSection('hospitals')">Hospitals</button>
+  </div>
+
+  <div class="content">
+    <div id="home" class="section active">
+      <h2>Home</h2>
+      <p>Welcome to the dashboard.</p>
+    </div>
+    <div id="patients" class="section">
+      <h2>Patients</h2>
+      <p>Patient details go here.</p>
+    </div>
+    <div id="opd" class="section">
+      <h2>OPD</h2>
+      <p>Outpatient department info here.</p>
+    </div>
+    <div id="hospitals" class="section">
+      <h2>Hospitals</h2>
+      <p>Hospital details here.</p>
+    </div>
+  </div>
+
+  <script>
+    function showSection(id) {
+      // hide all sections
+      document.querySelectorAll('.section').forEach(div => {
+        div.style.display = 'none';
+      });
+      // show only the selected one
+      document.getElementById(id).style.display = 'block';
+    }
+  </script>
+</body>
+</html>
