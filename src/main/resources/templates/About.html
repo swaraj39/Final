@@ -905,30 +905,30 @@
         }
 
         // Animate stats counting
-        function animateStats() {
-            const statElements = document.querySelectorAll('.stat-number span');
-            const values = [50000, 5000, 12, 98];
-            const durations = [2000, 1500, 1000, 1000];
+        // function animateStats() {
+        //     const statElements = document.querySelectorAll('.stat-number span');
+        //     const values = [50000, 5000, 12, 98];
+        //     const durations = [2000, 1500, 1000, 1000];
 
-            statElements.forEach((element, index) => {
-                const endValue = values[index];
-                const duration = durations[index];
-                const startValue = 0;
-                const increment = endValue / (duration / 16);
-                let current = startValue;
+        //     statElements.forEach((element, index) => {
+        //         const endValue = values[index];
+        //         const duration = durations[index];
+        //         const startValue = 0;
+        //         const increment = endValue / (duration / 16);
+        //         let current = startValue;
 
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= endValue) {
-                        clearInterval(timer);
-                        current = endValue;
-                    }
-                    element.textContent = index === 3 ?
-                        Math.round(current) + '%' :
-                        Math.round(current).toLocaleString() + (index === 0 ? '+' : index === 1 ? '+' : '');
-                }, 16);
-            });
-        }
+        //         const timer = setInterval(() => {
+        //             current += increment;
+        //             if (current >= endValue) {
+        //                 clearInterval(timer);
+        //                 current = endValue;
+        //             }
+        //             element.textContent = index === 3 ?
+        //                 Math.round(current) + '%' :
+        //                 Math.round(current).toLocaleString() + (index === 0 ? '+' : index === 1 ? '+' : '');
+        //         }, 16);
+        //     });
+        // }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
