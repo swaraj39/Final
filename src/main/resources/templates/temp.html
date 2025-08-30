@@ -111,8 +111,8 @@
         .about-hero {
             padding: 120px 0 100px;
             text-align: center;
-            background: linear-gradient(rgba(15, 17, 23, 0.9), rgba(15, 17, 23, 0.9)),
-                url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
+            background: linear-gradient(rgba(15, 17, 23, 0.9), rgba(15, 17, 23, 0.9)), 
+                        url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
             position: relative;
             overflow: hidden;
         }
@@ -557,7 +557,6 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -568,11 +567,9 @@
             0% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.05);
             }
-
             100% {
                 transform: scale(1);
             }
@@ -612,7 +609,6 @@
             0% {
                 transform: translateY(0) rotate(0deg);
             }
-
             100% {
                 transform: translateY(-1000px) rotate(720deg);
             }
@@ -623,11 +619,11 @@
             .about-hero h1 {
                 font-size: 3rem;
             }
-
+            
             .mission-content {
                 flex-direction: column;
             }
-
+            
             .mission-image {
                 order: -1;
                 margin-bottom: 40px;
@@ -657,22 +653,21 @@
             .about-hero h1 {
                 font-size: 2.5rem;
             }
-
+            
             .section-title {
                 font-size: 2.2rem;
             }
-
+            
             .cta h2 {
                 font-size: 2.2rem;
             }
-
+            
             .hero-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-
-            .btn,
-            .btn1 {
+            
+            .btn, .btn1 {
                 width: 100%;
                 max-width: 300px;
                 text-align: center;
@@ -685,8 +680,8 @@
     <header>
         <div class="container header-content">
             <div class="logo">
-                <i class="fas fa-fire"></i>
-                 Quiz<span>Forge</span>
+                <i class="fas fa-code"></i>
+                Quiz<span>Forge</span>
             </div>
             <nav>
                 <a href="/">Home</a>
@@ -809,8 +804,7 @@
     <section class="cta">
         <div class="container cta-content">
             <h2 class="animate-on-scroll">Ready to Improve Your Coding Skills?</h2>
-            <p class="animate-on-scroll">Join thousands of developers who use QuizForge to stay sharp and learn new
-                technologies.</p>
+            <p class="animate-on-scroll">Join thousands of developers who use QuizForge to stay sharp and learn new technologies.</p>
             <a href="/signup" class="btn animate-on-scroll">Get Started Today</a>
         </div>
     </section>
@@ -862,18 +856,18 @@
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const numberOfParticles = 30;
-
+            
             for (let i = 0; i < numberOfParticles; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
-
+                
                 // Random properties
                 const size = Math.random() * 10 + 2;
                 const posX = Math.random() * 100;
                 const posY = Math.random() * 100;
                 const delay = Math.random() * 15;
                 const opacity = Math.random() * 0.3 + 0.1;
-
+                
                 // Apply styles
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
@@ -881,67 +875,67 @@
                 particle.style.top = `${posY}%`;
                 particle.style.animationDelay = `${delay}s`;
                 particle.style.opacity = opacity;
-
+                
                 // Random color from theme
                 const colors = ['var(--primary)', 'var(--secondary)', 'var(--info)', 'var(--success)'];
                 particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-
+                
                 particlesContainer.appendChild(particle);
             }
         }
-
+        
         // Animate elements on scroll
         function animateOnScroll() {
             const elements = document.querySelectorAll('.animate-on-scroll');
-
+            
             elements.forEach(element => {
                 const elementPosition = element.getBoundingClientRect().top;
                 const screenPosition = window.innerHeight / 1.3;
-
+                
                 if (elementPosition < screenPosition) {
                     element.classList.add('is-visible');
                 }
             });
         }
-
+        
         // Animate stats counting
         function animateStats() {
             const statElements = document.querySelectorAll('.stat-number span');
             const values = [50000, 5000, 12, 98];
             const durations = [2000, 1500, 1000, 1000];
-
+            
             statElements.forEach((element, index) => {
                 const endValue = values[index];
                 const duration = durations[index];
                 const startValue = 0;
                 const increment = endValue / (duration / 16);
                 let current = startValue;
-
+                
                 const timer = setInterval(() => {
                     current += increment;
                     if (current >= endValue) {
                         clearInterval(timer);
                         current = endValue;
                     }
-                    element.textContent = index === 3 ?
-                        Math.round(current) + '%' :
+                    element.textContent = index === 3 ? 
+                        Math.round(current) + '%' : 
                         Math.round(current).toLocaleString() + (index === 0 ? '+' : index === 1 ? '+' : '');
                 }, 16);
             });
         }
-
+        
         // Initialize
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             createParticles();
-
+            
             // Only animate stats if not using Thymeleaf values
             if (!document.querySelector('html').hasAttribute('xmlns:th')) {
                 // Check if stats are already populated with Thymeleaf values
                 const statValues = document.querySelectorAll('.stat-number span');
-                const hasThymeleafValues = Array.from(statValues).some(span =>
+                const hasThymeleafValues = Array.from(statValues).some(span => 
                     span.textContent.includes('$') || span.hasAttribute('th:text')
                 );
-
+                
                 if (!hasThymeleafValues) {
                     // Wait for stats to be in view before animating
                     const observer = new IntersectionObserver((entries) => {
@@ -952,11 +946,11 @@
                             }
                         });
                     }, { threshold: 0.5 });
-
+                    
                     observer.observe(document.querySelector('.stats'));
                 }
             }
-
+            
             window.addEventListener('scroll', animateOnScroll);
             // Initial check in case elements are already in view
             animateOnScroll();
