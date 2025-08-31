@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.*;
 
 @Entity
@@ -26,4 +27,7 @@ public class TimeQuestion {
     private String reason;
     private String level;
     private int usersolved;
+
+    @Version
+    private Long version;
 }

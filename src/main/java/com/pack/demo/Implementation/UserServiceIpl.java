@@ -53,6 +53,7 @@ public class UserServiceIpl implements com.pack.demo.Services.UserService {
         user.setJoinDate(LocalDate.now());
         user.setAvatar(userModel.getAvatar());
         user.setVerified(false);
+        user.setLevel(1);
         userRepo.save(user);
 
         //todo generating code

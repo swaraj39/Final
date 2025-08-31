@@ -38,6 +38,7 @@ public class UserModel implements UserDetails {
     private LocalDate dailyquestion;
     private String avatar;
     private LocalDateTime lastlogin;
+    private int level;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Streak streak;

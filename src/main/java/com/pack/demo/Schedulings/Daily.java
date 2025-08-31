@@ -14,40 +14,50 @@ import com.pack.demo.ModelDAO.TimeQuestion;
 import com.pack.demo.Repository.DailyRepo;
 import com.pack.demo.Repository.QuestionRepo;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class Daily {
     
     @Autowired
     private QuestionRepo questionRepo;
+
     @Autowired
     private DailyRepo dailyRepo;
 
-    @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight
-    public void DailyQuestion() {
-        List<QuestionModel> questions = questionRepo.findAll();
-        Collections.shuffle(questions);
+    // ✅ Runs every day at midnight
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void generateDailyQuestion() {
+        createOrGetTodayQuestion();
     }
 
-    @PostConstruct
-    public TimeQuestion questions() {
-       Optional<TimeQuestion> timOptional = dailyRepo.findByDate(LocalDate.now());
-       if (timOptional.isPresent()) {
-           TimeQuestion timeQuestion = timOptional.get();
-           // Do something with timeQuestion
-           return timeQuestion;
-       }
-       else{
-           // Handle the case where no TimeQuestion is found
-              List<QuestionModel> questions = questionRepo.findAll();
-                Collections.shuffle(questions);
-                TimeQuestion timeQuestion = new TimeQuestion(questions.get(0).getId(), questions.get(0).getQuestion(),
-                        questions.get(0).getOption1(), questions.get(0).getOption2(), questions.get(0).getOption3(),
-                        questions.get(0).getOption4(), LocalDate.now(), questions.get(0).getCorrectans(),
-                        questions.get(0).getReason(), questions.get(0).getLevel(),questions.get(0).getUsersolved());
-                dailyRepo.save(timeQuestion);
-                return timeQuestion;
-       }
+    // ✅ This can be called anytime (e.g., from controller) to get today's question
+    public TimeQuestion createOrGetTodayQuestion() {
+        Optional<TimeQuestion> existing = dailyRepo.findByDate(LocalDate.now());
+        
+        if (existing.isPresent()) {
+            return existing.get();
+        } else {
+            // Pick a random question
+            List<QuestionModel> questions = questionRepo.findAll();
+            Collections.shuffle(questions);
+            QuestionModel q = questions.get(0);
+
+            // Create a new daily question
+            TimeQuestion timeQuestion = new TimeQuestion(
+                    q.getId(),
+                    q.getQuestion(),
+                    q.getOption1(),
+                    q.getOption2(),
+                    q.getOption3(),
+                    q.getOption4(),
+                    LocalDate.now(),
+                    q.getCorrectans(),
+                    q.getReason(),
+                    q.getLevel(),
+                    0,   // ✅ usersolved always starts fresh
+                    0L   // ✅ version always starts at 0
+            );
+
+            return dailyRepo.save(timeQuestion);
+        }
     }
 }

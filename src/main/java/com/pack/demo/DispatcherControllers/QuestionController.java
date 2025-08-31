@@ -206,6 +206,9 @@ public class QuestionController {
                     i.setCurrentStreak(i.getCurrentStreak()+1);
                     i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
                     streakRepo.save(i);
+                    if(i.getLongestStreak()%5==0){
+                        userModel.setLevel(userModel.getLevel()+1);
+                    }
                     userModel.setDailyquestion(LocalDate.now());
                     userRepo.save(userModel);
                 }
@@ -219,6 +222,9 @@ public class QuestionController {
                     }else{
                         i.setCurrentStreak(i.getCurrentStreak()+1);
                         i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                        if(i.getLongestStreak()%5==0){
+                            userModel.setLevel(userModel.getLevel()+1);
+                        }
                     }
                     streakRepo.save(i);
                 }else 
