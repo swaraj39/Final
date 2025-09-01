@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Daily Question</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <style>
@@ -129,6 +131,11 @@
                 </div>
             </div>
         </div>
+        <div class="text-center mb-6">
+            <span class="text-gray-400">Users Solved: </span>
+            <span id="solved-count" class="font-bold text-green-400" th:text="${question.usersolved}"></span>
+        </div>
+
 
         <!-- Countdown timer -->
         <div id="countdown-container" class="mb-6">
@@ -207,6 +214,26 @@
         document.getElementById("answer-section").classList.remove("hidden");
         document.getElementById("show-answer-btn-container").classList.add("hidden");
     }
+
+    let stompClient = null;
+
+    function connectWebSocket() {
+        const socket = new SockJS('http://localhost:8080/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+
+            // Subscribe to updates about solved count
+            stompClient.subscribe('/topic/dailySolvedCount', function (message) {
+                const newCount = message.body;
+                document.getElementById("solved-count").textContent = newCount;
+            });
+        });
+    }
+
+    // Call on page load
+    connectWebSocket();
 </script>
 
 </body>

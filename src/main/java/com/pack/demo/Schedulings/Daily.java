@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,9 @@ public class Daily {
     }
 
     // ✅ This can be called anytime (e.g., from controller) to get today's question
+    @PostConstruct
     public TimeQuestion createOrGetTodayQuestion() {
+        System.out.println("creating");
         Optional<TimeQuestion> existing = dailyRepo.findByDate(LocalDate.now());
         
         if (existing.isPresent()) {

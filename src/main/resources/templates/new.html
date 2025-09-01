@@ -5,6 +5,8 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Quiz Forge - Professional Quiz Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -264,8 +266,9 @@
                         <div class="flex justify-between items-center">
                             <div class="flex items-center text-gray-400">
                                 <i class="fas fa-users mr-2"></i>
-                                <span th:text="${daily.usersolved} + ' players today'">players today</span>
+                                <span id="daily-solved-count" th:text="${daily.usersolved} + ' players today'">players today</span>
                             </div>
+
                             <!-- <div class="bg-red-600 text-white text-sm px-3 py-1 rounded-full">
                                 4.8 <i class="fas fa-star ml-1"></i>
                             </div> -->
@@ -652,6 +655,26 @@
         window.addEventListener('load', () => {
             createParticles();
         });
+
+         let stompClient = null;
+
+    function connect() {
+        const socket = new SockJS('/ws'); // maps to your WebSocketConfig
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+
+            // Subscribe to daily solved count updates
+            stompClient.subscribe('/topic/dailySolvedCount', function (message) {
+                const count = message.body;
+                document.getElementById("daily-solved-count").textContent = count + " players today";
+            });
+        });
+    }
+
+    // start connection
+    connect();
     </script>
 </body>
 </html>

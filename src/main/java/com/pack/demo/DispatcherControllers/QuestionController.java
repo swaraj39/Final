@@ -6,6 +6,7 @@ import com.pack.demo.Services.QuestionService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,12 +25,13 @@ import java.util.stream.Collectors;
 public class QuestionController {
 
     private final Review review;
-    private TimeQuestion timeQuestion;
+    private  TimeQuestion timeQuestion;
     private final QuestionService questionService;
     private final UserRepo userRepo;
     private final DashBoardRepo dashBoardRepo;
     private final DailyRepo dailyRepo;
     private final StreakRepo streakRepo;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     String[] arr = new String[10];
     String arr1[] = new String[10];
     String[] a = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
@@ -41,13 +43,14 @@ public class QuestionController {
     // }
     @Autowired
     public QuestionController(Review review, QuestionService questionService,
-            UserRepo userRepo, DashBoardRepo dashBoardRepo, DailyRepo dailyRepo, StreakRepo streakRepo) {
+            UserRepo userRepo, DashBoardRepo dashBoardRepo, DailyRepo dailyRepo, StreakRepo streakRepo, SimpMessagingTemplate simpMessagingTemplate) {
         this.review = review;
         this.questionService = questionService;
         this.userRepo = userRepo;
         this.dashBoardRepo = dashBoardRepo;
         this.dailyRepo = dailyRepo;
         this.streakRepo = streakRepo;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     // @Autowired
@@ -248,6 +251,7 @@ public class QuestionController {
                 dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
                 dailyRepo.save(dailyQuestion);
             }
+            simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
         }
 
         timeQuestion = questionService.getDailyOne();
