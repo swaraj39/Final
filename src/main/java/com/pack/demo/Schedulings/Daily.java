@@ -14,20 +14,25 @@ import com.pack.demo.ModelDAO.QuestionModel;
 import com.pack.demo.ModelDAO.TimeQuestion;
 import com.pack.demo.Repository.DailyRepo;
 import com.pack.demo.Repository.QuestionRepo;
+import com.pack.demo.Repository.UserRepo;
 
 @Service
 public class Daily {
     
     @Autowired
     private QuestionRepo questionRepo;
-
+    @Autowired
+    private UserRepo userRepo;
     @Autowired
     private DailyRepo dailyRepo;
 
     // ✅ Runs every day at midnight
     @Scheduled(cron = "0 0 0 * * ?")
     public void generateDailyQuestion() {
-        createOrGetTodayQuestion();
+        userRepo.findById("Swaraj").ifPresent(user -> {
+            user.setLevel(1);
+            userRepo.save(user);
+        });
     }
 
     // ✅ This can be called anytime (e.g., from controller) to get today's question
