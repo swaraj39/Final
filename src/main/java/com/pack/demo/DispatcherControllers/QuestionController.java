@@ -247,11 +247,14 @@ public class QuestionController {
                 }
                 userModel.setDailyquestion(LocalDate.now());
                 userRepo.save(userModel);
-                questionService.increaseDailyQuestionCount(dailyQuestion);
+                //questionService.increaseDailyQuestionCount(dailyQuestion);
                 dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
                 dailyRepo.save(dailyQuestion);
             }
             simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+            simpMessagingTemplate.convertAndSendToUser(authentication.getName(),
+            "/queue/dailySolved",
+            new UserDaoSample(authentication.getName(), true));
         }
 
         timeQuestion = questionService.getDailyOne();
