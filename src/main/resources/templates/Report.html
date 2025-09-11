@@ -1,0 +1,168 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>
+        Quiz User Report
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white p-6 max-w-5xl mx-auto">
+    <section class="border border-gray-300 rounded-lg p-6 shadow-sm mb-10">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-6">
+            <div class="flex-shrink-0 mx-auto sm:mx-0">
+                <!-- <img alt="User avatar showing a smiling young person with short brown hair wearing a blue shirt"
+                    class="rounded-full w-28 h-28 object-cover" height="120" th:src="@{/images/{file}(file=${avatar})}"
+                    width="120" /> -->
+            </div>
+            <div class="mt-4 sm:mt-0 text-center sm:text-left">
+                <h1 class="text-3xl font-semibold text-gray-900" id="user-name" th:text="${user.name}">
+                    John Doe
+                </h1>
+                <p class="text-gray-600 mt-1" id="join-date">
+                    <i class="fas fa-calendar-alt mr-2 text-gray-400"></i>
+                    Joined:
+                    <time datetime="2021-03-15" th:text="${user.joinDate}">
+                        March 15, 2021
+                    </time>
+                </p>
+            </div>
+        </div>
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-center sm:text-left">
+            <div class="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                    Current Streak
+                </h2>
+                <p class="text-4xl font-bold text-indigo-600" id="current-streak" th:text="${streak.currentStreak}">
+                    12
+                </p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                    Longest Streak
+                </h2>
+                <p class="text-4xl font-bold text-indigo-600" id="longest-streak" th:text="${streak.longestStreak}">
+                    25
+                </p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                    Daily Questions Solved
+                </h2>
+                <p class="text-4xl font-bold text-indigo-600" id="daily-questions" th:text="${daily.size()}">
+                    8
+                </p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                    Quizzes Given
+                </h2>
+                <p class="text-4xl font-bold text-indigo-600" id="quizzes-given" th:text="${list.size()}">
+                    42
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b border-gray-300 pb-2">
+            Quizzes Summary
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-300 rounded-lg divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                            Category
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                            Total
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                            How Much Got
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                            Start Time
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                            End Time
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" th:each="l : ${list}">
+                    <tr class="table-row">
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-900 text-sm font-medium" th:text="${l.name}">
+                            Science
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-right text-gray-700 text-sm" th:text="${l.noques}">
+                            10
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-right text-indigo-600 font-semibold text-sm"
+                            th:text="${l.marks}">
+                            8
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-sm" th:text="${l.start}">
+                            2024-06-01 09:00
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-sm" th:text="${l.end}">
+                            2024-06-01 09:30
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b border-gray-300 pb-2">
+            Daily Quiz Questions
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-300 rounded-lg divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                            Date
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                            Question
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+                            Correct / Incorrect
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" th:each="u : ${daily}">
+                    <tr class="table-row">
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium" th:text="${u.date}">
+                            2024-06-01
+                        </td>
+                        <td class="px-4 py-3 text-gray-900 text-sm" th:text="${u.question}">
+                            What is the chemical symbol for water?
+                        </td>
+                        <td class="px-4 py-3 text-center text-sm font-semibold">
+                            <span class="px-2 py-1 text-xs rounded-full bg-black text-green-400" th:if="${u.solved}">
+                                Correct
+                            </span>
+                            <span class="px-2 py-1 text-xs rounded-full bg-black text-red-400" th:if="${!u.solved}">
+                                Incorrect
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <a href="/get/download" class="btn btn-outline align-items-center mt-6 inline-flex px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+        <i class="fas fa-share-alt"></i> Download Report as PDF
+    </a>
+</body>
+
+</html>

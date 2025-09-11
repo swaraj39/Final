@@ -1,240 +1,348 @@
-<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Daily Question</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #000000 0%, #000000 100%);
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #000000 0%, #000000 100%);
+      }
 
-        .card {
-            background: linear-gradient(165deg, #341717 0%, #000000 100%);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px linear-gradient(90deg, #6366f1, #ec4899, #f59e0b);
-            position: relative;
-            overflow: hidden;
-        }
+      .card {
+        background: linear-gradient(165deg, #341717 0%, #000000 100%);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px linear-gradient(90deg, #6366f1, #ec4899, #f59e0b);
+        position: relative;
+        overflow: hidden;
+      }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #6366f1, #ec4899, #f59e0b);
-            z-index: 10;
-        }
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #6366f1, #ec4899, #f59e0b);
+        z-index: 10;
+      }
 
-        .option-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
+      .option-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+      }
 
-        .option-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
-            border-left: 4px solid #ff7575;
-        }
+      .option-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+        border-left: 4px solid #ff7575;
+      }
 
-        .countdown-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #1e293b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin: 0 auto;
-        }
+      .countdown-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin: 0 auto;
+      }
 
-        .countdown-circle::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(#ffffff 0% var(--progress), #374151 var(--progress) 100%);
-            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 0);
-            mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 0);
-        }
+      .countdown-circle::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(
+          #ffffff 0% var(--progress),
+          #374151 var(--progress) 100%
+        );
+        -webkit-mask: radial-gradient(
+          farthest-side,
+          transparent calc(100% - 3px),
+          #fff 0
+        );
+        mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 0);
+      }
 
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
         }
+        70% {
+          box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+        }
+      }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 md:p-8">
-
-<div class="max-w-2xl w-full card p-6 md:p-8 text-white">
+  <div class="max-w-2xl w-full card p-6 md:p-8 text-white">
     <div class="text-center mb-2">
-        <span class="text-xs bg-red-900 text-red-200 py-1 px-3 rounded-full">Daily Challenge</span>
+      <span class="text-xs bg-red-900 text-red-200 py-1 px-3 rounded-full"
+        >Daily Challenge</span
+      >
     </div>
-    
-    <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-purple-400">Question of the Day</span>
+
+    <h1
+      class="text-3xl md:text-4xl font-bold text-center mb-2"
+    >
+      <span
+        class="bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-purple-400"
+        >Question of the Day</span
+      >
     </h1>
-    
-    <p class="text-center text-gray-400 mb-8">Test your knowledge with today's challenge</p>
 
-    <div th:if="${question != null}">
-        <div class="bg-slate-800/50 rounded-xl p-5 mb-8 border border-slate-700/50">
-            <p class="text-lg md:text-xl font-medium mb-0 text-center" th:text="${question.question}"></p>
-        </div>
-        
-        <div class="space-y-4 mb-8">
-            <div class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer">
-                <div class="flex items-center">
-                    <span class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-900/50 text-red-300 mr-3">A</span>
-                    <span th:text="${question.option1}"></span>
-                </div>
-            </div>
-            <div class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer">
-                <div class="flex items-center">
-                    <span class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-900/50 text-red-300 mr-3">B</span>
-                    <span th:text="${question.option2}"></span>
-                </div>
-            </div>
-            <div class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer">
-                <div class="flex items-center">
-                    <span class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-900/50 text-red-300 mr-3">C</span>
-                    <span th:text="${question.option3}"></span>
-                </div>
-            </div>
-            <div class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer">
-                <div class="flex items-center">
-                    <span class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-900/50 text-red-300 mr-3">D</span>
-                    <span th:text="${question.option4}"></span>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mb-6">
-            <span class="text-gray-400">Users Solved: </span>
-            <span id="solved-count" class="font-bold text-green-400" th:text="${question.usersolved}"></span>
-        </div>
+    <p class="text-center text-gray-400 mb-8">
+      Test your knowledge with today's challenge
+    </p>
 
+    <form th:if="${question != null}" id="quiz-form" method="post" class="space-y-6">
+        <input type="hidden" id="questionans" name="questionans" th:value="${question.answer}" />
+        <div
+        class="bg-slate-800/50 rounded-xl p-5 mb-8 border border-slate-700/50"
+      >
+        <p
+          class="text-lg md:text-xl font-medium mb-0 text-center"
+          th:text="${question.question}"
+        ></p>
+      </div>
 
-        <!-- Countdown timer -->
-        <div id="countdown-container" class="mb-6">
-            <p class="text-center text-sm text-gray-400 mb-2">Answer will be available in</p>
-            <div class="countdown-circle">
-                <span id="countdown-text" class="text-white z-10 font-semibold">10</span>
-            </div>
-        </div>
+      <div class="space-y-4 mb-8">
+        <label
+          class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer flex items-center"
+          for="option1"
+        >
+          <input
+            type="checkbox"
+            id="option1"
+            name="selectedOptions"
+            th:value="${question.option1}"
+            class="mr-3 h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <span
+            class="flex items-center"
+            th:text="${question.option1}"
+          ></span>
+        </label>
 
-        <!-- Hidden Answer Section -->
-        <div id="answer-section" class="space-y-3 mt-6 hidden fade-in">
-            <div class="bg-gradient-to-r from-slate-800 to-slate-800/70 p-5 rounded-xl border border-green-900/30">
-                <p class="text-green-400 font-semibold mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    Correct Answer
-                </p>
-                <p class="text-lg" th:text="${question.answer}"></p>
-            </div>
-        </div>
+        <label
+          class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer flex items-center"
+          for="option2"
+        >
+          <input
+            type="checkbox"
+            id="option2"
+            name="selectedOptions"
+            th:value="${question.option2}"
+            class="mr-3 h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <span
+            class="flex items-center"
+            th:text="${question.option2}"
+          ></span>
+        </label>
 
-        <!-- Show Answer Button -->
-        <div id="show-answer-btn-container" class="text-center mt-6 hidden fade-in">
-            <button onclick="showAnswer()"
-                    class="pulse-animation bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white px-8 py-3 rounded-full text-lg font-medium transition-all shadow-lg hover:shadow-indigo-500/20">
-                Reveal Answer
-            </button>
+        <label
+          class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer flex items-center"
+          for="option3"
+        >
+          <input
+            type="checkbox"
+            id="option3"
+            name="selectedOptions"
+            th:value="${question.option3}"
+            class="mr-3 h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <span
+            class="flex items-center"
+            th:text="${question.option3}"
+          ></span>
+        </label>
+
+        <label
+          class="option-card bg-slate-800/70 p-4 rounded-lg cursor-pointer flex items-center"
+          for="option4"
+        >
+          <input
+            type="checkbox"
+            id="option4"
+            name="selectedOptions"
+            th:value="${question.option4}"
+            class="mr-3 h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <span
+            class="flex items-center"
+            th:text="${question.option4}"
+          ></span>
+        </label>
+      </div>
+
+      <div class="text-center mb-6">
+        <span class="text-gray-400">Users Solved: </span>
+        <span id="solved-count" class="font-bold text-green-400" th:text="${question.usersolved}"></span>
+      </div>
+
+      <!-- <div
+        id="answer-section"
+        class="space-y-3 mt-6 hidden fade-in"
+      >
+        <div
+          class="bg-gradient-to-r from-slate-800 to-slate-800/70 p-5 rounded-xl border border-green-900/30"
+        >
+          <p
+            class="text-green-400 font-semibold mb-2 flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Correct Answer
+          </p>
+          <p class="text-lg" th:text="${question.correctans}"></p>
         </div>
-    </div>
+      </div> -->
+
+      
+      <!-- Submit Button -->
+      <div class="text-center mt-6">
+        <button id="submit-btn" type="submit" onclick="showAnswer(event)">
+          Submit Answer
+        </button>
+      </div>
+
+    </form>
 
     <div th:if="${question == null}" class="text-center py-10">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-slate-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-16 w-16 mx-auto text-slate-500 mb-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <p class="text-slate-400">No question available for today.</p>
+      <p class="text-sm text-slate-500 mt-2">
+        Check back tomorrow for a new challenge!
+      </p>
+    </div>
+
+    <div
+      class="text-center mt-10 pt-6 border-t border-slate-700/30"
+    >
+      <a
+        href="/home"
+        class="inline-flex items-center text-sm text-slate-400 hover:text-white transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+            clip-rule="evenodd"
+          />
         </svg>
-        <p class="text-slate-400">No question available for today.</p>
-        <p class="text-sm text-slate-500 mt-2">Check back tomorrow for a new challenge!</p>
+        Back to Home
+      </a>
     </div>
+  </div>
 
-    <div class="text-center mt-10 pt-6 border-t border-slate-700/30">
-        <a href="/home" class="inline-flex items-center text-sm text-slate-400 hover:text-white transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-            </svg>
-            Back to Home
-        </a>
-    </div>
-</div>
-
-<script>
+  <script>
     // Countdown functionality
-    let countdownValue = 10;
-    const countdownElement = document.getElementById('countdown-text');
-    const countdownCircle = document.querySelector('.countdown-circle');
     
-    // Set initial progress
-    countdownCircle.style.setProperty('--progress', '100%');
-    
-    const countdownInterval = setInterval(() => {
-        countdownValue--;
-        countdownElement.textContent = countdownValue;
-        
-        // Update progress circle
-        const progress = (countdownValue / 10) * 100;
-        countdownCircle.style.setProperty('--progress', `${progress}%`);
-        
-        if (countdownValue <= 0) {
-            clearInterval(countdownInterval);
-            document.getElementById("countdown-container").classList.add('hidden');
-            document.getElementById("show-answer-btn-container").classList.remove("hidden");
-        }
-    }, 1000);
 
     // Function to show the answer section
-    function showAnswer() {
-        document.getElementById("answer-section").classList.remove("hidden");
-        document.getElementById("show-answer-btn-container").classList.add("hidden");
+    function showAnswer(event) {
+        event.preventDefault(); // Prevent form submission
+        var ans = document.getElementById("questionans").value;
+        var userans = document.querySelector('input[name="selectedOptions"]:checked');
+        alert("User Answer is: " + userans.value);
+        alert("Correct Answer is: " + ans);
+        if(ans === userans.value){
+            window.location.href = "/ques/yes";
+            alert("Correct Answer is: " + ans);
+            console.log("Correct" + ans + " " + userans.value);
+        }
+        else{
+            window.location.href = "/ques/no";
+            alert("Wrong Answer! Correct Answer is: " + ans);
+            console.log("Wrong" + ans + " " + userans.value);
+        }
+        // else{
+        //     fetch('/ques/no',{
+        //         method: 'POST'
+        //     });
+        // }
+       
     }
 
-    let stompClient = null;
+    // Enable submit button only if at least one checkbox is checked
+    const checkboxes = document.querySelectorAll(
+      'input[name="selectedOptions"]'
+    );
+    const submitBtn = document.getElementById("submit-btn");
 
-    function connectWebSocket() {
-        const socket = new SockJS('http://localhost:8080/ws');
-        stompClient = Stomp.over(socket);
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const anyChecked = Array.from(checkboxes).some(
+          (cb) => cb.checked
+        );
+        submitBtn.disabled = !anyChecked;
+      });
+    });
 
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-
-            // Subscribe to updates about solved count
-            stompClient.subscribe('/topic/dailySolvedCount', function (message) {
-                const newCount = message.body;
-                document.getElementById("solved-count").textContent = newCount;
-            });
-        });
-    }
-
-    // Call on page load
-    connectWebSocket();
-</script>
-
+    
+  </script>
 </body>
 </html>

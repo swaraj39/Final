@@ -5,9 +5,13 @@ import com.pack.demo.ModelDAO.QuestionModel;
 import com.pack.demo.ModelDAO.Category;
 import com.pack.demo.ModelDAO.ShowCateogry;
 import com.pack.demo.ModelDAO.TimeQuestion;
+import com.pack.demo.ModelDAO.UserDaily;
+import com.pack.demo.ModelDAO.UserModel;
 import com.pack.demo.Repository.CategoryRepo;
 import com.pack.demo.Repository.DailyRepo;
 import com.pack.demo.Repository.QuestionRepo;
+import com.pack.demo.Repository.UserDailyRepo;
+import com.pack.demo.Repository.UserRepo;
 import com.pack.demo.Services.QuestionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +26,14 @@ public class QuestionServiceImpl implements QuestionService {
     private CategoryRepo categoryRepository;
 
     @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
     private QuestionRepo questionRepository;
 
+    @Autowired 
+    private UserDailyRepo userDailyRepo;
+    
     @Autowired
     private DailyRepo dailyRepo;
 
@@ -168,6 +178,16 @@ public class QuestionServiceImpl implements QuestionService {
             return questionRepository.findAll();
         }
         return questionRepository.findByCateogry(categoryId);
+    }
+
+    @Override
+    public void saveDailyUser(String userId, LocalDate now,String question, boolean b) {
+        UserDaily userDaily = new UserDaily();
+        userDaily.setUser(userRepo.findById(userId).get());
+        userDaily.setQuestion(question);    
+        userDaily.setDate(now);
+        userDaily.setSolved(b);
+        userDailyRepo.save(userDaily);
     }
     
 }
