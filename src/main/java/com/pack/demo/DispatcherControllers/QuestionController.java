@@ -197,6 +197,7 @@ public class QuestionController {
         if (user.isPresent() && timeQuestion1.isPresent()) {
             TimeQuestion dailyQuestion = timeQuestion1.get();
             UserModel userModel = user.get();
+
             if(userModel.getDailyquestion() != null && userModel.getDailyquestion().equals(dailyQuestion.getDate())){
                 //model.addAttribute("solved",true);
                 System.out.println("User has already attempted today's question.");
@@ -258,6 +259,7 @@ public class QuestionController {
         }
 
         timeQuestion = questionService.getDailyOne();
+        System.out.println(timeQuestion);
         model.addAttribute("question", timeQuestion);
         return "DailyQuiz";
         
@@ -294,5 +296,99 @@ public class QuestionController {
 
         session.setAttribute("started", null);
         return "Result";
+    }
+
+    @GetMapping(value = "/yes")
+    public String yes(Authentication authentication , Model model) {
+        Optional<UserModel> user = userRepo.findById(authentication.getName());
+        Optional<TimeQuestion> timeQuestion1 = dailyRepo.findByDate(LocalDate.now());
+
+        if (user.isPresent() && timeQuestion1.isPresent()) {
+            UserModel userModel = user.get();
+            TimeQuestion dailyQuestion = timeQuestion1.get();
+            //? new user
+            if(userModel.getDailyquestion() == null){
+                    Streak i = streakRepo.findByUserId(userModel.getId());
+                    i.setCurrentStreak(i.getCurrentStreak()+1);
+                    i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                    streakRepo.save(i);
+                    if(i.getLongestStreak()%5==0){
+                        userModel.setLevel(userModel.getLevel()+1);
+                    }
+                    userModel.setDailyquestion(LocalDate.now());
+                    userRepo.save(userModel);
+                    dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+                    dailyRepo.save(dailyQuestion);
+                    questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(), true);
+                    model.addAttribute("streak", i);
+                    simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+                    return "Solved";
+            }
+            else if(userModel.getDailyquestion().plusDays(1).equals(LocalDate.now())){
+                    Streak i = streakRepo.findByUserId(userModel.getId());
+                    if(i == null) {
+                        i = new Streak();
+                        i.setUser(userModel);
+                        i.setCurrentStreak(1);
+                        i.setLongestStreak(1);
+                    }else{
+                        i.setCurrentStreak(i.getCurrentStreak()+1);
+                        i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                        if(i.getLongestStreak()%5==0){
+                            userModel.setLevel(userModel.getLevel()+1);
+                        }
+                    }
+                    streakRepo.save(i);
+                    userModel.setDailyquestion(LocalDate.now());
+                    userRepo.save(userModel);
+                    dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+                    dailyRepo.save(dailyQuestion);
+                    questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(), true);
+                    model.addAttribute("streak", i);
+                    simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+                    return "Solved";
+                }else 
+                {
+                    Streak i = streakRepo.findByUserId(userModel.getId());
+                    if (i == null) {
+                        i = new Streak();
+                        i.setUser(userModel);
+                        i.setCurrentStreak(1);
+                        i.setLongestStreak(1);
+                    }
+                    else {
+                        i.setCurrentStreak(1);
+                        i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                    }
+                    streakRepo.save(i);
+                    userModel.setDailyquestion(LocalDate.now());
+                    userRepo.save(userModel);
+                    dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+                    dailyRepo.save(dailyQuestion);
+                    questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(), true);
+                    model.addAttribute("streak", i);
+                    simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+                    return "Solved";
+                }
+
+        }
+
+        return "DailyQuiz";
+    }
+
+    @GetMapping(value = "/no")
+    public String no(Authentication authentication){
+        UserModel userModel = userRepo.findById(authentication.getName()).get();
+        TimeQuestion dailyQuestion = dailyRepo.findByDate(LocalDate.now()).get();
+        userModel.setDailyquestion(LocalDate.now());
+        userRepo.save(userModel);
+        Streak i = streakRepo.findByUserId(userModel.getId());
+        i.setCurrentStreak(0);
+        streakRepo.save(i);
+        dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+        dailyRepo.save(dailyQuestion);
+        questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(),  false);
+        simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+        return "Unsolved";
     }
 }

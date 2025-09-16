@@ -22,6 +22,8 @@ public class Dashboard {
 
     @ManyToOne
     private UserModel users;
+
+    
     public Dashboard(){}
     public Dashboard(int noques, String name, int marks, LocalDate localDate, LocalTime start, LocalTime end, UserModel
                       users){

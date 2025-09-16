@@ -1,5 +1,6 @@
 package com.pack.demo.Services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import com.pack.demo.ModelDAO.Category;
 import com.pack.demo.ModelDAO.QuestionDTO;
 import com.pack.demo.ModelDAO.QuestionModel;
 import com.pack.demo.ModelDAO.TimeQuestion;
+import com.pack.demo.ModelDAO.UserModel;
 
 public interface QuestionService {
 
@@ -29,4 +31,6 @@ public interface QuestionService {
     void increaseDailyQuestionCount(TimeQuestion dailyQuestion);
 
     List<QuestionModel> findByCateogry(String categoryId);
+
+    void saveDailyUser(String userId, LocalDate now, String question, boolean b);
 }
