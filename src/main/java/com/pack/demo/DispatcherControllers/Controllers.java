@@ -376,33 +376,6 @@ public class Controllers {
         return "logout";
     }
 
-    @GetMapping("/history/pdf")
-    public void generatePdfReport(Authentication auth, HttpServletResponse response) throws IOException {
-        String username = auth.getName();
-        List<Dashboard> list = dashBoardRepo.findByUsersId(username);
-        int totalMarks = list.stream().mapToInt(Dashboard::getMarks).sum();
-        int totalQuizzes = list.size();
-        float avg = totalQuizzes == 0 ? 0 : (totalMarks * 100f / totalQuizzes);
-
-        Context ctx = new Context();
-        ctx.setVariable("name", username);
-        ctx.setVariable("number", totalQuizzes);
-        ctx.setVariable("avg", avg);
-        ctx.setVariable("list", list);
-
-        String html = templateEngine.process("report-pdf", ctx);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        PdfRendererBuilder builder = new PdfRendererBuilder();
-        builder.withHtmlContent(html, null);
-        builder.toStream(baos);
-        builder.run();
-
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=quiz_history.pdf");
-        response.getOutputStream().write(baos.toByteArray());
-    }
-
     @RequestMapping("/Report")
     public String reportPage(Authentication authentication, Model model) {
         String name = authentication.getName();

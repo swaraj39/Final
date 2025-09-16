@@ -7,5 +7,7 @@ import com.pack.demo.ModelDAO.Category;
 
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, String> {
+
+
     
 }
