@@ -265,7 +265,16 @@
 </div>
 
 <script>
+
+    document.addEventListener("visibilitychange", function() {
+        if (document.hidden) {
+            alert("You have switched tabs or minimized the browser. Please return to the quiz.");
+            window.location.href = "/logout";
+        }
+    });
     document.addEventListener("DOMContentLoaded", function () {
+
+        
         let questionCards = document.querySelectorAll(".question-card");
         let nextBtns = document.querySelectorAll(".next-btn");
         let prevBtns = document.querySelectorAll(".prev-btn");

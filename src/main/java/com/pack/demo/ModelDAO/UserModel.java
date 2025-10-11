@@ -57,6 +57,11 @@ public class UserModel implements UserDetails {
         return this.id;
     }
 
+    public UserModel(String name, String email, String phoneno){
+        this.name = name;
+        this.email = email;
+        this.phoneno = phoneno;
+    }
     @Override
     public String getPassword() {
         return this.password;

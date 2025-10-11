@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
@@ -25,16 +25,18 @@
     Keep up the great work! Your current streak is:
    </p>
    <div aria-label="Current streak count" class="inline-flex items-center justify-center bg-blue-100 text-blue-800 font-bold text-4xl rounded-full w-78 h-24 mx-auto mb-6 shadow-md select-none">
-    7 -> 8
+       <span th:text="${streak.currentStreak}-1"> 7</span> -><span th:text="${currentStreak}">8</span>
    </div>
    <p class="text-gray-600 text-base mb-8">
     Stay consistent to keep your streak going and unlock new achievements.
    </p>
-   <button aria-label="View next question" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300" type="button">
+   <form >
+   <button aria-label="View next question" formaction="/home" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300" type="button">
     To Home
     <i class="fas fa-arrow-right ml-2">
     </i>
    </button>
+   </form>
   </div>
  </body>
 </html>

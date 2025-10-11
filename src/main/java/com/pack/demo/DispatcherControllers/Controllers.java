@@ -156,7 +156,8 @@ public class Controllers {
     }
 
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") UserModel user, Model model, Authentication authentication) {
+    public String updateUser(@RequestBody UserModel user, Model model, Authentication authentication) {
+        //System.out.println(user);
         if (userService1.updateUser(user, authentication.getName())) {
             model.addAttribute("successMessage", "Profile updated successfully!");
             return "signup";
@@ -317,6 +318,7 @@ public class Controllers {
         model.addAttribute("show", showCateogries.stream().limit(5).toList());
         model.addAttribute("users", userModelList.stream().limit(5).toList());
         model.addAttribute("name", authentication.getName());
+        model.addAttribute("user1", userRepo.findById(authentication.getName()).get());
         model.addAttribute("number", list.size());
         model.addAttribute("lists", userService1.findallusers().stream().filter(u -> u.isVerified()).toList().size());
         model.addAttribute("avg", avg);

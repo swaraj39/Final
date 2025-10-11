@@ -6,6 +6,8 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>Quiz Application Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -171,6 +173,21 @@
             animation: flame 2s infinite;
             color: #f59e0b;
         }
+
+        #toast {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 4px;
+            animation: fadeInOut 2.5s forwards;
+            font-family: sans-serif;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
     </style>
 </head>
 
@@ -203,19 +220,66 @@
                 </a>
             </nav>
             <div class="flex items-center space-x-4">
-                <button aria-label="User menu"
+                <button aria-label="User menu" id="userBtn"
                     class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-lg hover:bg-gray-800 transition">
                     <div class="relative">
-                        <img alt="User avatar" class="h-9 w-9 rounded-full glow"
+                        <img alt="User avatar" class="h-9 w-9 rounded-full glow" id="avatar"
                             th:src="@{/images/{file}(file=${avatar})}" />
                         <span
                             class="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-gray-900"></span>
                     </div>
                     <div class="hidden sm:block text-left">
-                        <p class="text-sm font-semibold text-white" th:text="${name}">Admin</p>
-                        <p class="text-xs text-gray-400" th:text="${role}">Administrator</p>
+                        <p class="text-sm font-semibold text-white" id="name" th:text="${name}">Admin</p>
+                        <p class="text-xs text-gray-400" id="role" th:text="${role}">Administrator</p>
                     </div>
                 </button>
+            </div>
+            <!-- Profile Popup -->
+            <div id="profilePopup"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-gray-900 p-6 rounded-lg w-80">
+                    <div class="form-section">
+                        <label class="block text-gray-300 mb-3 text-sm font-medium">Choose Avatar</label>
+                        <div class="flex space-x-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="avatar" value="Avtar1.png" class="hidden peer" required
+                                    th:checked="${user1.avatar == 'Avtar1.png'}">
+                                <img th:src="@{/images/Avtar1.png}" alt="Avatar 1"
+                                    class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="avatar" value="Avtar2.png" class="hidden peer"
+                                    th:checked="${user1.avatar == 'Avtar2.png'}">
+                                <img th:src="@{/images/Avtar2.png}" alt="Avatar 2"
+                                    class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="avatar" value="Avtar3.png" class="hidden peer"
+                                    th:checked="${user1.avatar == 'Avtar3.png'}">
+                                <img th:src="@{/images/Avtar3.png}" alt="Avatar 3"
+                                    class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="avatar" value="Avtar4.png" class="hidden peer"
+                                    th:checked="${user1.avatar == 'Avtar4.png'}">
+                                <img th:src="@{/images/Avtar4.png}" alt="Avatar 4"
+                                    class="w-12 h-12 rounded-full border-2 border-transparent peer-checked:border-red-500">
+                            </label>
+                        </div>
+                    </div>
+                    <h3 class="text-white text-lg mb-4">Update Profile</h3>
+                    <input id="nameInput" type="text" placeholder="Name" th:value="${user1.name}"
+                        class="w-full mb-3 p-2 rounded bg-gray-800 text-white" />
+                    <input id="emailInput" type="email" placeholder="Email" th:value="${user1.email}"
+                        class="w-full mb-3 p-2 rounded bg-gray-800 text-white" />
+                    <input id="phoneInput" type="email" placeholder="Phone" th:value="${user1.phoneno}"
+                        class="w-full mb-3 p-2 rounded bg-gray-800 text-white" />
+                    <div class="flex justify-end space-x-2">
+                        <button id="cancelBtn" class="px-3 py-1 rounded bg-gray-700 text-white">Cancel</button>
+                        <button id="updateBtn" class="px-3 py-1 rounded bg-green-600 text-white"
+                            onclick="change()">Update</button>
+                    </div>
+                </div>
             </div>
             <!-- Mobile menu button -->
             <button aria-label="Open menu"
@@ -258,7 +322,7 @@
                     </button>
                 </a>
             </div>
-
+            <div id="toast">Update Successful!</div>
             <!-- Stats cards -->
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
                 <div class="stat-card rounded-xl p-5 card-hover">
@@ -557,29 +621,29 @@
                     </thead>
                     <tbody class="divide-y divide-gray-800">
                         <tr th:each="user : ${user}" class="table-row">
-                                    <td class="px-5 py-4 whitespace-nowrap">
-                                        <div class="flex items-center space-x-5">
-                                            <img alt="User avatar" class="h-9 w-9 rounded-full glow"
-                                                th:src="@{/images/{file}(file=${user.avatar})}" />
+                            <td class="px-5 py-4 whitespace-nowrap">
+                                <div class="flex items-center space-x-5">
+                                    <img alt="User avatar" class="h-9 w-9 rounded-full glow"
+                                        th:src="@{/images/{file}(file=${user.avatar})}" />
 
-                                            <div>
-                                                <p class="text-white font-medium" th:text="${user.id}">John Doe</p>
-                                                <p class="text-xs text-gray-400" th:text="${user.email}">
-                                                    user@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${user.joinDate}">
-                                        2024-01-01</td>
-                                    <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${user.noquiz}">5
-                                    </td>
-                                    <td class="px-5 py-4 whitespace-nowrap">
-                                        <span class="px-2 py-1 text-xs rounded-full bg-green-900/30 text-green-400"
-                                            th:if="${user.isVerified == true}">Active</span>
-                                        <span class="px-2 py-1 text-xs rounded-full bg-red-900/30 text-red-400"
-                                            th:if="${user.isVerified == false}">Inactive</span>
-                                    </td>
-                                </tr>
+                                    <div>
+                                        <p class="text-white font-medium" th:text="${user.id}">John Doe</p>
+                                        <p class="text-xs text-gray-400" th:text="${user.email}">
+                                            user@example.com</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${user.joinDate}">
+                                2024-01-01</td>
+                            <td class="px-5 py-4 whitespace-nowrap text-gray-300" th:text="${user.noquiz}">5
+                            </td>
+                            <td class="px-5 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs rounded-full bg-green-900/30 text-green-400"
+                                    th:if="${user.isVerified == true}">Active</span>
+                                <span class="px-2 py-1 text-xs rounded-full bg-red-900/30 text-red-400"
+                                    th:if="${user.isVerified == false}">Inactive</span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -595,6 +659,94 @@
             mobileMenu.classList.toggle('hidden');
         });
 
+        const userBtn = document.getElementById('userBtn');
+        const popup = document.getElementById('profilePopup');
+        // Open popup and fill user data from model
+        userBtn.addEventListener('click', () => {
+            popup.classList.remove('hidden');
+        });
+
+        // Close popup
+        cancelBtn.addEventListener('click', () => popup.classList.add('hidden'));
+        // const updateBtn = document.getElementById('updateBtn');
+        // updateBtn.addEventListener('click', () => {
+        //     const selectedAvatar = document.querySelector('input[name="avatar"]:checked').value;
+        //     const name = document.getElementById('nameInput').value;
+        //     const email = document.getElementById('emailInput').value;
+        //     const phone = document.getElementById('phoneInput').value;
+
+        //     // Send updated data to server
+        //     fetch('/update', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({
+        //             avatar: selectedAvatar,
+        //             name: name,
+        //             email: email,
+        //             phoneno: phone
+        //         })
+        //     }).then(response => {
+        //         if (response.ok) {
+        //             // Close popup and refresh page to show updated info
+        //             popup.classList.add('hidden');
+        //             location.reload();
+        //         } else {
+        //             alert('Failed to update profile. Please try again.');
+        //         }
+        //     });
+        // });
+        let stompClient = null;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const socket = new SockJS("/ws");
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function () {
+                console.log("Connected to WebSocket");
+
+                // Subscribe to updates
+                stompClient.subscribe("/topic/profile-updates", function (message) {
+                    const user = JSON.parse(message.body);
+
+                    // 🖼️ Update avatar image in real time
+                    if (user.avatar) {
+                        document.getElementById("avatar").src = user.avatar;
+                    }
+
+                    // 🧍‍♂️ Update user info
+                    if (user.name) {
+                        document.getElementById("name").innerText = user.name;
+                    }
+
+                    if (user.role) {
+                        document.getElementById("role").innerText = user.role;
+                    }
+                });
+            });
+        });
+        function change() {
+            const selectedAvatar = document.querySelector('input[name="avatar"]:checked').value;
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const phone = document.getElementById('phoneInput').value;
+            const updatedUser = {
+                avatar: selectedAvatar,
+                name: name,
+                email: email,
+                phoneno: phone
+            };
+            stompClient.send("/app/updateProfile", {}, JSON.stringify(updatedUser));
+            document.getElementById("profilePopup").classList.add("hidden");
+            const toast = document.getElementById("toast");
+            toast.style.display = "block";
+
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 2000);
+
+        }
         // Modal functionality
         const viewAllQuizzesBtn = document.getElementById('viewAllQuizzesBtn');
         const viewAllUsersBtn = document.getElementById('viewAllUsersBtn');
