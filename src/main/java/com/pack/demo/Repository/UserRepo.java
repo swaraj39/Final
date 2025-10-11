@@ -11,7 +11,11 @@
         UserModel findByEmail(String email);
 
 
-        @Query("SELECT u FROM UserModel u WHERE u.id = :ids")
-        UserModel usersOne(@Param("ids") String ids);
+
+    //     @Query("SELECT u FROM UserModel u WHERE u.id = :ids")
+    //     UserModel usersOne(@Param("ids") String ids);
+
+    // @Query("SELECT u FROM UserModel u WHERE u.id = :ids")
+    // UserModel usersOne(@Param("ids") String ids);
 
     }
