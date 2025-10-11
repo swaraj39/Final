@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class QuestionController {
 
     private final Review review;
-    private TimeQuestion timeQuestion;
+    private  TimeQuestion timeQuestion;
     private final QuestionService questionService;
     private final UserRepo userRepo;
     private final DashBoardRepo dashBoardRepo;
@@ -43,8 +43,7 @@ public class QuestionController {
     // }
     @Autowired
     public QuestionController(Review review, QuestionService questionService,
-            UserRepo userRepo, DashBoardRepo dashBoardRepo, DailyRepo dailyRepo, StreakRepo streakRepo,
-            SimpMessagingTemplate simpMessagingTemplate) {
+            UserRepo userRepo, DashBoardRepo dashBoardRepo, DailyRepo dailyRepo, StreakRepo streakRepo, SimpMessagingTemplate simpMessagingTemplate) {
         this.review = review;
         this.questionService = questionService;
         this.userRepo = userRepo;
@@ -66,11 +65,11 @@ public class QuestionController {
     // @Autowired
     // private Review review;
 
-    // todo executes Every time when controller calls
+    //todo executes Every time when controller calls
     @ModelAttribute
     public void set(Authentication authentication, Model model, HttpSession session) {
         // If authentication is null, try reading from the security context
-        // session.setAttribute("started", null);
+        //session.setAttribute("started", null);
         if (authentication == null) {
             authentication = SecurityContextHolder.getContext().getAuthentication();
         }
@@ -86,8 +85,7 @@ public class QuestionController {
             model.addAttribute("name", null);
         }
     }
-
-    // todo To give new HTML page
+    //todo To give new HTML page
     @RequestMapping("/home")
     public String home() {
         return "new";
@@ -95,12 +93,12 @@ public class QuestionController {
 
     @RequestMapping("/go")
     public String goToQuiz(@RequestParam("categoryValue") String categoryId, Model model) {
-        // todo Logic to start the quiz
+        //todo Logic to start the quiz
         model.addAttribute("message", categoryId);
         return "show";
     }
 
-    // todo Executive before start a quiz
+    //todo Executive before start a quiz
     @RequestMapping("/before")
     public String index(Authentication authentication, Model model, HttpSession session) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -113,12 +111,12 @@ public class QuestionController {
             return "Prize";
         }
         model.addAttribute("categories", questionService.selectbycateogry());
-        // return "Startbefore";
+        //return "Startbefore";
         session.setAttribute("started", null);
         return "demo";
     }
 
-    // todo Execute for question adding
+    //todo Execute for question adding
     @RequestMapping("/add")
     public String addQuestion(Model model) {
         List<Category> categories = questionService.selectbycateogry();
@@ -126,7 +124,7 @@ public class QuestionController {
         return "QuestionAdding";
     }
 
-    // todo Used to show category wise question
+    //todo Used to show category wise question
     @RequestMapping("/select")
     public String select(Model model) {
         List<Category> categories = questionService.selectbycateogry();
@@ -136,14 +134,14 @@ public class QuestionController {
         return "Cateogry";
     }
 
-    // todo For saving the questions
+    //todo For saving the questions
     @RequestMapping("/save")
     public String add(@ModelAttribute QuestionModel questionModel) {
         questionService.saveQuestion(questionModel);
         return "Saved";
     }
 
-    // todo Shuffle the question and show it
+    //todo Shuffle the question and show it
     @RequestMapping("/getall")
     public String getAll(Model model) {
         List<QuestionModel> list = questionService.getAllQuestions();
@@ -152,7 +150,7 @@ public class QuestionController {
         return "QuestionShow";
     }
 
-    // todo To show the questions only of that category
+    //todo To show the questions only of that category
     @GetMapping("/getall/{name}")
     public String getAllByCategory(@PathVariable("name") String name, Model model) {
         List<QuestionModel> list = questionService.getQuestionsByCategory(name);
@@ -161,14 +159,13 @@ public class QuestionController {
         return "QuestionShow";
     }
 
-    // todo It is used for setting the random questions then used to start quiz
+    //todo It is used for setting the random questions then used to start quiz
     @GetMapping(value = "/test")
-    public String showRandomQuestions(HttpSession session, Model model,
-            @RequestParam("categoryValue") String categoryId) {
-
+    public String showRandomQuestions(HttpSession session, Model model, @RequestParam("categoryValue") String categoryId) {
+        
         if ("yes".equals(session.getAttribute("started"))) {
             session.setAttribute("started", null);
-            return "redirect:/ques/before"; // Optional page saying "You cannot reload the quiz"
+        return "redirect:/ques/before";  // Optional page saying "You cannot reload the quiz"
         }
         List<QuestionModel> questions = questionService.findByCateogry(categoryId);
         Collections.shuffle(questions);
@@ -183,7 +180,7 @@ public class QuestionController {
         return "quizz";
     }
 
-    // todo Get it by Category
+    //todo Get it by Category
     @RequestMapping(value = "/questionOne", method = { RequestMethod.GET, RequestMethod.POST })
     public String getByCategory(@RequestParam(value = "questionType", required = false) String type, Model model) {
         List<QuestionModel> resultList = questionService.getQuestionsByCategory(type);
@@ -191,84 +188,22 @@ public class QuestionController {
         return "QuestionShow";
     }
 
-    // todo Used to show the daily question also check for the user's streak and
-    // also increase the count of the questions that users solve
+    //todo Used to show the daily question also check for the user's streak and also increase the count of the questions that users solve
     @RequestMapping(value = "/dailyQuestion", method = RequestMethod.POST)
     public String dailyquiz(Model model, HttpSession session, Authentication authentication) {
         Optional<UserModel> user = userRepo.findById(authentication.getName());
         Optional<TimeQuestion> timeQuestion1 = dailyRepo.findByDate(LocalDate.now());
         TimeQuestion timeQuestion = timeQuestion1.get();
-        if (user.isPresent() && timeQuestion1.isPresent()) {
-            TimeQuestion dailyQuestion = timeQuestion1.get();
-            UserModel userModel = user.get();
-            if (userModel.getDailyquestion() != null && userModel.getDailyquestion().equals(dailyQuestion.getDate())) {
-                // model.addAttribute("solved",true);
-                System.out.println("User has already attempted today's question.");
-                return "redirect:/home";
-            } else {
-                System.out.println("User is attempting today's question.");
-                if (userModel.getDailyquestion() == null) {
-                    Streak i = streakRepo.findByUserId(userModel.getId());
-                    i.setCurrentStreak(i.getCurrentStreak() + 1);
-                    i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
-                    streakRepo.save(i);
-                    if (i.getLongestStreak() % 5 == 0) {
-                        userModel.setLevel(userModel.getLevel() + 1);
-                    }
-                    userModel.setDailyquestion(LocalDate.now());
-                    userRepo.save(userModel);
-                } else if (userModel.getDailyquestion().plusDays(1).equals(LocalDate.now())) {
-                    Streak i = streakRepo.findByUserId(userModel.getId());
-                    if (i == null) {
-                        i = new Streak();
-                        i.setUser(userModel);
-                        i.setCurrentStreak(1);
-                        i.setLongestStreak(1);
-                    } else {
-                        i.setCurrentStreak(i.getCurrentStreak() + 1);
-                        i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
-                        if (i.getLongestStreak() % 5 == 0) {
-                            userModel.setLevel(userModel.getLevel() + 1);
-                        }
-                    }
-                    streakRepo.save(i);
-                } else {
-                    Streak i = streakRepo.findByUserId(userModel.getId());
-                    if (i == null) {
-                        i = new Streak();
-                        i.setUser(userModel);
-                        i.setCurrentStreak(1);
-                        i.setLongestStreak(1);
-                    } else {
-                        i.setCurrentStreak(1);
-                        i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
-                    }
-                    streakRepo.save(i);
-                }
-                userModel.setDailyquestion(LocalDate.now());
-                userRepo.save(userModel);
-                // questionService.increaseDailyQuestionCount(dailyQuestion);
-                dailyQuestion.setUsersolved(dailyQuestion.getUsersolved() + 1);
-                dailyRepo.save(dailyQuestion);
-            }
-            simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount", dailyQuestion.getUsersolved());
-            simpMessagingTemplate.convertAndSendToUser(authentication.getName(),
-                    "/queue/dailySolved",
-                    new UserDaoSample(authentication.getName(), true));
-        }
-
-        timeQuestion = questionService.getDailyOne();
         model.addAttribute("question", timeQuestion);
         return "DailyQuiz";
-
+        
     }
 
-    // TODO Evaluate the quiz and produce the score of the user
+    //TODO Evaluate the quiz and produce the score of the user
     @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
     public String submitQuiz(@RequestParam Map<String, String> answers, Model model, HttpSession session,
-            Authentication authentication, @RequestParam("categoryValue") String category,
-            @RequestParam("start") String start) {
-
+            Authentication authentication, @RequestParam("categoryValue") String category, @RequestParam("start") String start) {
+        
         List<QuestionModel> randomQuestions = (List<QuestionModel>) session.getAttribute("randomQuestions");
 
         if (randomQuestions == null || randomQuestions.isEmpty()) {
@@ -284,7 +219,7 @@ public class QuestionController {
         String u = authentication.getName();
         LocalTime startTime = LocalTime.parse(start);
         LocalTime endTime = LocalTime.now();
-        Dashboard dashboard = new Dashboard(answers.size() - 2, category,
+        Dashboard dashboard = new Dashboard(answers.size()-2, category,
                 score, currentTime, startTime, endTime, userRepo.findById(u).get());
         dashBoardRepo.save(dashboard);
 
@@ -295,5 +230,99 @@ public class QuestionController {
 
         session.setAttribute("started", null);
         return "Result";
+    }
+
+    @GetMapping(value = "/yes")
+    public String yes(Authentication authentication , Model model) {
+        Optional<UserModel> user = userRepo.findById(authentication.getName());
+        Optional<TimeQuestion> timeQuestion1 = dailyRepo.findByDate(LocalDate.now());
+
+        if (user.isPresent() && timeQuestion1.isPresent()) {
+            UserModel userModel = user.get();
+            TimeQuestion dailyQuestion = timeQuestion1.get();
+            //? new user
+            if(userModel.getDailyquestion() == null){
+                    Streak i = streakRepo.findByUserId(userModel.getId());
+                    i.setCurrentStreak(i.getCurrentStreak()+1);
+                    i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                    streakRepo.save(i);
+                    if(i.getLongestStreak()%5==0){
+                        userModel.setLevel(userModel.getLevel()+1);
+                    }
+                    userModel.setDailyquestion(LocalDate.now());
+                    userRepo.save(userModel);
+                    dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+                    dailyRepo.save(dailyQuestion);
+                    questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(), true);
+                    model.addAttribute("streak", i);
+                    simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+                    return "Solved";
+            }
+            else if(userModel.getDailyquestion().plusDays(1).equals(LocalDate.now())){
+                    Streak i = streakRepo.findByUserId(userModel.getId());
+                    if(i == null) {
+                        i = new Streak();
+                        i.setUser(userModel);
+                        i.setCurrentStreak(1);
+                        i.setLongestStreak(1);
+                    }else{
+                        i.setCurrentStreak(i.getCurrentStreak()+1);
+                        i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                        if(i.getLongestStreak()%5==0){
+                            userModel.setLevel(userModel.getLevel()+1);
+                        }
+                    }
+                    streakRepo.save(i);
+                    userModel.setDailyquestion(LocalDate.now());
+                    userRepo.save(userModel);
+                    dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+                    dailyRepo.save(dailyQuestion);
+                    questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(), true);
+                    model.addAttribute("streak", i);
+                    simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+                    return "Solved";
+                }else 
+                {
+                    Streak i = streakRepo.findByUserId(userModel.getId());
+                    if (i == null) {
+                        i = new Streak();
+                        i.setUser(userModel);
+                        i.setCurrentStreak(1);
+                        i.setLongestStreak(1);
+                    }
+                    else {
+                        i.setCurrentStreak(1);
+                        i.setLongestStreak(Math.max(i.getLongestStreak(), i.getCurrentStreak()));
+                    }
+                    streakRepo.save(i);
+                    userModel.setDailyquestion(LocalDate.now());
+                    userRepo.save(userModel);
+                    dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+                    dailyRepo.save(dailyQuestion);
+                    questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(), true);
+                    model.addAttribute("streak", i);
+                    simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+                    return "Solved";
+                }
+
+        }
+
+        return "DailyQuiz";
+    }
+
+    @GetMapping(value = "/no")
+    public String no(Authentication authentication){
+        UserModel userModel = userRepo.findById(authentication.getName()).get();
+        TimeQuestion dailyQuestion = dailyRepo.findByDate(LocalDate.now()).get();
+        userModel.setDailyquestion(LocalDate.now());
+        userRepo.save(userModel);
+        Streak i = streakRepo.findByUserId(userModel.getId());
+        i.setCurrentStreak(0);
+        streakRepo.save(i);
+        dailyQuestion.setUsersolved(dailyQuestion.getUsersolved()+1);
+        dailyRepo.save(dailyQuestion);
+        questionService.saveDailyUser(authentication.getName(), LocalDate.now(),dailyQuestion.getQuestion(),  false);
+        simpMessagingTemplate.convertAndSend("/topic/dailySolvedCount",dailyQuestion.getUsersolved());
+        return "Unsolved";
     }
 }
