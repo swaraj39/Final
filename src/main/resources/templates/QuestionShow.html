@@ -243,6 +243,16 @@
             color: var(--text-gray);
             margin-bottom: 20px;
         }
+
+        .hidden {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: rgba(23, 23, 23, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(225, 29, 72, 0.2);
+            color: red;
+        }
         
         .action-button {
             display: inline-flex;
@@ -302,11 +312,70 @@
             color: var(--text-gray);
             font-size: 0.9rem;
         }
+        .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #000000;
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 30px rgba(255, 0, 0, 0.4);
+    animation: fadeIn 0.4s ease-out;
+    text-align: center;
+    color: #fff;
+    border-color: #e11d48;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-button {
+        display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background: linear-gradient(135deg, #fda4af 0%, #e11d48 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(225, 29, 72, 0.4);
+}
+
     </style>
 </head>
 
 <body>
-
+<main
 <div class="header">
     <div class="logo">
         <div class="logo-icon">
@@ -363,22 +432,71 @@
         </div>
     </div>
 </div>
-
 <div class="footer">
     <p>© 2023 QuizForge • Interactive Learning Platform</p>
 </div>
+<input type="hidden" name="val" id="val" th:value="${val}">
+</main>
+<!-- Modal -->
+<div class="modal hidden" id="limit">
+  <div class="modal-content">
+    <h2 style="color: #e11d48;">Your free trial is over now</h2><br>
+    <p>To continue accessing more answers, please consider upgrading to our premium plan or come after 24 hours.</p>
+    
+    <div class="form-actions">
+      <a href="/prize" class="action-button">
+        <i class="fas fa-arrow-up"></i> Upgrade Now
+      </a>
+      
+    </div>
+  </div>
+</div>
+
+
+
 
 <script>
-   function toggleAnswer(id) {
-        const answerElement = document.getElementById('answer-' + id);
-        if (answerElement.style.display === 'block') {
-            answerElement.style.display = 'none';
-        } else {
-            answerElement.style.display = 'block';
-            answerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+   var counter = 0;
+
+function toggleAnswer(id) {
+    const answerElement = document.getElementById('answer-' + id);
+
+    if (answerElement.style.display === 'block') {
+        answerElement.style.display = 'none';
+        console.log("hidden");
+    } else {
+        answerElement.style.display = 'block';
+        answerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        counter++;
+        console.log("counter: " + counter);
+
+        if (counter >= 3) {
+            document.getElementById("limit").classList.remove("hidden");
+
+            // 🔥 Call the /limitUser endpoint to add the user to 'offer' table
+            fetch('/limitUser', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('LimitUser API Response:', data);
+            })
+            .catch(error => {
+                console.error('Error calling /limitUser:', error);
+            });
         }
     }
-    
+}
+
+    window.onload = function() {
+        const val = document.getElementById("val").value;
+        if(val==='false'){
+            document.getElementById("limit").classList.remove("hidden");
+        }
+    };
     // Add keyboard navigation support
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {

@@ -26,14 +26,14 @@ public class Daily {
     @Autowired
     private DailyRepo dailyRepo;
 
-    // ✅ Runs every day at midnight
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void generateDailyQuestion() {
-        userRepo.findById("Swaraj").ifPresent(user -> {
-            user.setLevel(1);
-            userRepo.save(user);
-        });
-    }
+//    // ✅ Runs every day at midnight
+//    @Scheduled(cron = "0 0 0 * * ?")
+//    public void generateDailyQuestion() {
+//        userRepo.findById("Swaraj").ifPresent(user -> {
+//            user.setLevel(1);
+//            userRepo.save(user);
+//        });
+//    }
 
     // ✅ This can be called anytime (e.g., from controller) to get today's question
     @PostConstruct

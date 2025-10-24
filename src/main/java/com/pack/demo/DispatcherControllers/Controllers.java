@@ -4,14 +4,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.pack.demo.Implementation.QuestionServiceImpl;
 import com.pack.demo.Implementation.UserServiceIpl;
 import com.pack.demo.ModelDAO.*;
-import com.pack.demo.Repository.CategoryRepo;
-import com.pack.demo.Repository.DailyRepo;
-import com.pack.demo.Repository.DashBoardRepo;
-import com.pack.demo.Repository.Review;
-import com.pack.demo.Repository.StreakRepo;
-import com.pack.demo.Repository.TokenRepo;
-import com.pack.demo.Repository.UserDailyRepo;
-import com.pack.demo.Repository.UserRepo;
+import com.pack.demo.Repository.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,6 +61,8 @@ public class Controllers {
     private CategoryRepo categoryRepo;
     @Autowired
     private UserDailyRepo userDailyRepo;
+    @Autowired
+    private OfferRepo offerRepo;
 
     // todo For Every request this executes
     // ! executes
@@ -398,5 +395,16 @@ public class Controllers {
         model.addAttribute("streak", s);
         model.addAttribute("avatar", userModel.getAvatar() == null ? "Avtar1.png" : userModel.getAvatar());
         return "Report";
+    }
+
+    @RequestMapping("/limitUser")
+    public ResponseEntity<String> LimitUser(Authentication authentication){
+        UserModel u = userRepo.findById(authentication.getName()).orElse(null);
+        if(!offerRepo.findById(u.getId()).isPresent()){
+            OfferUser o = new OfferUser(u.getId(), LocalDateTime.now());
+            offerRepo.save(o);
+            new ResponseEntity<>("Added", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Already Present", HttpStatus.OK);
     }
 }
